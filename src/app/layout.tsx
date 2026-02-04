@@ -24,6 +24,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Nihar Shah' }],
   creator: 'Nihar Shah',
+  icons: {
+    icon: '/favicon.svg',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
