@@ -1,0 +1,306 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent/30 text-foreground;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-border-light;
+  }
+}
+
+@layer components {
+  /* ========================================
+     iOS 26 Glass Effect System
+     ======================================== */
+
+  /* Primary glass - Hero cards, main panels, featured content */
+  .glass-primary {
+    @apply relative overflow-hidden rounded-2xl;
+    background: linear-gradient(
+      135deg,
+      rgba(26, 26, 26, 0.8) 0%,
+      rgba(17, 17, 17, 0.6) 100%
+    );
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  /* Secondary glass - Nested cards, section containers */
+  .glass-secondary {
+    @apply relative overflow-hidden rounded-xl;
+    background: linear-gradient(
+      135deg,
+      rgba(26, 26, 26, 0.6) 0%,
+      rgba(17, 17, 17, 0.4) 100%
+    );
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Tertiary glass - Badges, tags, small interactive elements */
+  .glass-tertiary {
+    @apply relative overflow-hidden rounded-lg;
+    background: rgba(26, 26, 26, 0.5);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  /* Frosted edge effect - adds depth with light/dark edges */
+  .glass-edge::before {
+    content: '';
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 40%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.15) 100%
+    );
+    border-radius: inherit;
+  }
+
+  /* Vibrancy tint overlay - subtle cyan glow */
+  .glass-vibrancy::after {
+    content: '';
+    @apply absolute inset-0 pointer-events-none;
+    background: radial-gradient(
+      ellipse at 20% 20%,
+      rgba(6, 182, 212, 0.08) 0%,
+      transparent 50%
+    );
+    border-radius: inherit;
+  }
+
+  /* Interactive glass state transitions */
+  .glass-interactive {
+    @apply transition-all duration-500 ease-out-expo;
+  }
+
+  .glass-interactive:hover {
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border-color: rgba(6, 182, 212, 0.25);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(6, 182, 212, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+
+  /* Legacy glass support (existing components) */
+  .glass {
+    @apply glass-secondary;
+  }
+
+  .glass-hover {
+    @apply glass-interactive;
+  }
+
+  /* ========================================
+     Glow Effects
+     ======================================== */
+
+  .glow-accent {
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+  }
+
+  .glow-accent-subtle {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+  }
+
+  /* ========================================
+     Section & Layout Utilities
+     ======================================== */
+
+  .section-padding {
+    @apply py-16 sm:py-20 md:py-24 lg:py-28 xl:py-32;
+  }
+
+  .grid-pattern {
+    background-image:
+      linear-gradient(to right, rgba(38, 38, 38, 0.3) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(38, 38, 38, 0.3) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Gradient fade for grid pattern edges */
+  .grid-fade {
+    mask-image: radial-gradient(
+      ellipse at center,
+      black 0%,
+      black 30%,
+      transparent 70%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse at center,
+      black 0%,
+      black 30%,
+      transparent 70%
+    );
+  }
+
+  /* ========================================
+     Floating Orbs (Background Decoration)
+     ======================================== */
+
+  .orb {
+    @apply absolute rounded-full pointer-events-none;
+    filter: blur(60px);
+  }
+
+  .orb-primary {
+    @apply orb bg-accent/20;
+  }
+
+  .orb-secondary {
+    @apply orb bg-accent/10;
+  }
+
+  /* ========================================
+     Special Effects
+     ======================================== */
+
+  /* Shimmer effect for loading/hover states */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+
+  /* Magnetic button container */
+  .magnetic-wrap {
+    @apply relative inline-block;
+  }
+
+  /* Timeline line for experience section */
+  .timeline-line {
+    @apply absolute w-px bg-gradient-to-b from-accent via-border to-transparent;
+  }
+}
+
+@layer utilities {
+  /* ========================================
+     Text Effects
+     ======================================== */
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-foreground to-foreground-secondary bg-clip-text text-transparent;
+  }
+
+  .text-gradient-accent {
+    @apply bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent;
+  }
+
+  /* ========================================
+     Scrollbar Utilities
+     ======================================== */
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* ========================================
+     3D Transform Utilities
+     ======================================== */
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
+
+/* ========================================
+   Responsive Glass Performance
+   ======================================== */
+
+@media (max-width: 768px) {
+  .glass-primary {
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+  }
+
+  .glass-secondary {
+    backdrop-filter: blur(12px) saturate(130%);
+    -webkit-backdrop-filter: blur(12px) saturate(130%);
+  }
+
+  .glass-tertiary {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+}
+
+/* ========================================
+   Reduced Motion Support
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-interactive {
+    transition: none;
+  }
+
+  .glass-interactive:hover {
+    transform: none;
+  }
+
+  .orb {
+    animation: none;
+  }
+
+  .shimmer {
+    animation: none;
+  }
+}
