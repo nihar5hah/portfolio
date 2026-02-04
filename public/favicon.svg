@@ -1,24 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- Background -->
-  <rect width="64" height="64" fill="#050505" rx="14"/>
-
-  <!-- Subtle accent border -->
-  <rect width="64" height="64" fill="none" stroke="#06b6d4" stroke-width="0.5" rx="14" opacity="0.3"/>
-
-  <!-- Text: "Nihar" -->
-  <text
-    x="32"
-    y="38"
-    font-family="system-ui, -apple-system, sans-serif"
-    font-size="24"
-    font-weight="700"
-    fill="#ffffff"
-    text-anchor="middle"
-    letter-spacing="-0.5"
-  >
-    Nihar
-  </text>
-
-  <!-- Accent dot after name -->
-  <circle cx="49" cy="36" r="1.5" fill="#06b6d4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#050505"/>
+  <text x="32" y="42" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle">N</text>
+  <circle cx="48" cy="36" r="2" fill="#06b6d4"/>
 </svg>
