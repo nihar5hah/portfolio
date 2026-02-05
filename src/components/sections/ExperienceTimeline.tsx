@@ -1,13 +1,15 @@
 'use client'
 
+import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { CheckCircle2, Building2, Calendar, MapPin, ArrowRight } from 'lucide-react'
+import { CheckCircle2, Building2, Calendar, MapPin, ChevronDown } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { experiences } from '@/data/experience'
 import type { Experience } from '@/types'
 import { cn } from '@/lib/utils'
 import { easings } from '@/components/motion/animations'
+import { useParticleBurst } from '@/components/ui/ParticleBurst'
 
 /**
  * Enhanced Experience Timeline
@@ -22,8 +24,32 @@ import { easings } from '@/components/motion/animations'
  */
 
 export function ExperienceTimeline() {
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const { canvasRef, burst } = useParticleBurst()
+
+  const handleNodeClick = (e: React.MouseEvent, experienceId: string) => {
+    setExpandedId(expandedId === experienceId ? null : experienceId)
+
+    // Trigger particle burst at click location
+    if (canvasRef.current) {
+      const rect = canvasRef.current.getBoundingClientRect()
+      burst({
+        x: e.clientX,
+        y: e.clientY,
+        color: 'rgba(99, 102, 241, 0.7)',
+        particleCount: 16,
+      })
+    }
+  }
+
   return (
-    <section id="experience" className="section-padding bg-background relative overflow-hidden">
+    <>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 pointer-events-none z-40"
+        style={{ width: '100vw', height: '100vh' }}
+      />
+      <section id="experience" className="section-padding bg-background relative overflow-hidden">
       {/* Background grid */}
       <div className="absolute inset-0 grid-brutalist opacity-5 pointer-events-none" />
 
@@ -64,7 +90,7 @@ export function ExperienceTimeline() {
                 >
                   {/* Timeline node */}
                   <motion.div
-                    className="absolute left-0 md:left-1/2 top-8 transform -translate-x-1/2 z-20"
+                    className="absolute left-0 md:left-1/2 top-8 transform -translate-x-1/2 z-20 cursor-pointer"
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true }}
@@ -74,13 +100,15 @@ export function ExperienceTimeline() {
                       stiffness: 300,
                       damping: 20,
                     }}
+                    onClick={(e) => handleNodeClick(e, item.id)}
                   >
                     <motion.div
                       className={cn(
-                        'w-5 h-5 rounded-full border-4 border-background shadow-lg',
-                        item.current ? 'bg-accent shadow-accent/50' : 'bg-accent'
+                        'w-5 h-5 rounded-full border-4 border-background shadow-lg transition-all',
+                        item.current ? 'bg-accent shadow-accent/50' : 'bg-accent',
+                        expandedId === item.id && 'ring-4 ring-accent/50 scale-125'
                       )}
-                      whileHover={{ scale: 1.3 }}
+                      whileHover={{ scale: 1.4 }}
                       animate={item.current ? {
                         boxShadow: ['0 0 0 0 rgba(99, 102, 241, 0.7)', '0 0 0 10px rgba(99, 102, 241, 0)']
                       } : {}}
@@ -96,10 +124,11 @@ export function ExperienceTimeline() {
                     {/* Experience card */}
                     <motion.div
                       className={cn(
-                        'relative overflow-hidden rounded-xl p-6 md:p-8',
+                        'relative overflow-visible rounded-xl p-6 md:p-8 cursor-pointer',
                         'bg-gradient-to-br from-background-secondary/70 to-background/50',
                         'border border-border hover:border-accent/50 transition-all duration-300',
-                        'group-hover:shadow-lg group-hover:shadow-accent/10'
+                        'group-hover:shadow-lg group-hover:shadow-accent/10',
+                        expandedId === item.id && 'border-accent/70'
                       )}
                       initial={{ opacity: 0, x: isEven ? -30 : 30 }}
                       whileInView={{ opacity: 1, x: 0 }}
@@ -109,7 +138,9 @@ export function ExperienceTimeline() {
                         duration: 0.6,
                         ease: easings.mechanical,
                       }}
-                      whileHover={{ y: -4 }}
+                      whileHover={{ y: -8, scale: 1.02 }}
+                      style={{ perspective: '1000px' }}
+                      onClick={(e) => handleNodeClick(e, item.id)}
                     >
                       {/* Accent borders */}
                       <div className="absolute inset-0 border-l-2 border-t-2 border-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none" />
@@ -236,7 +267,54 @@ export function ExperienceTimeline() {
                             Current Role
                           </motion.div>
                         )}
+
+                        {/* Expandable trigger */}
+                        <motion.button
+                          className="flex items-center gap-2 text-xs text-accent hover:text-accent-light transition-colors mt-4"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleNodeClick(e, item.id)
+                          }}
+                        >
+                          <span>{expandedId === item.id ? 'Hide' : 'Show'} details</span>
+                          <motion.div
+                            animate={{ rotate: expandedId === item.id ? 180 : 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <ChevronDown className="w-3 h-3" />
+                          </motion.div>
+                        </motion.button>
                       </div>
+
+                      {/* Expandable details section */}
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={expandedId === item.id ? { opacity: 1, height: 'auto' } : { opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-6 pt-6 border-t border-border/30 space-y-4">
+                          {/* Technologies */}
+                          <div>
+                            <p className="text-xs text-foreground-muted font-mono uppercase tracking-wider mb-3">
+                              Technologies
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {item.technologies.map((tech: string) => (
+                                <motion.span
+                                  key={tech}
+                                  className="px-2.5 py-1 rounded-lg bg-accent/10 border border-accent/20 text-xs text-accent"
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={expandedId === item.id ? { opacity: 1, scale: 1 } : { opacity: 0 }}
+                                  transition={{ duration: 0.2 }}
+                                >
+                                  {tech}
+                                </motion.span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
                     </motion.div>
                   </div>
                 </motion.div>
@@ -246,5 +324,6 @@ export function ExperienceTimeline() {
         </div>
       </Container>
     </section>
+    </>
   )
 }

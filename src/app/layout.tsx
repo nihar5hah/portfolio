@@ -4,6 +4,7 @@ import { GeistMono } from 'geist/font/mono'
 import { IBM_Plex_Mono, Instrument_Serif } from 'next/font/google'
 import { ThemeProvider } from '@/hooks/useTheme'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
+import { GlobalInteractions } from '@/components/layout/GlobalInteractions'
 import './globals.css'
 
 // Neural Brutalism: Technical display font
@@ -91,6 +92,7 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${ibmPlexMono.variable} ${instrumentSerif.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <ThemeProvider>
+          <GlobalInteractions />
           <ScrollProgress />
           {children}
         </ThemeProvider>
