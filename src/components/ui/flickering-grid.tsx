@@ -93,19 +93,17 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       dpr: number,
     ) => {
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "transparent";
-      ctx.fillRect(0, 0, width, height);
+
+      const step = squareSize + gridGap;
+      const sz = squareSize * dpr;
 
       for (let i = 0; i < cols; i++) {
+        const xPos = i * step * dpr;
         for (let j = 0; j < rows; j++) {
           const opacity = squares[i * rows + j];
+          if (opacity < 0.01) continue; // Skip near-invisible squares
           ctx.fillStyle = `${memoizedColor}${opacity})`;
-          ctx.fillRect(
-            i * (squareSize + gridGap) * dpr,
-            j * (squareSize + gridGap) * dpr,
-            squareSize * dpr,
-            squareSize * dpr,
-          );
+          ctx.fillRect(xPos, j * step * dpr, sz, sz);
         }
       }
     },
@@ -152,8 +150,10 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       animationFrameId = requestAnimationFrame(animate);
     };
 
+    let resizeTimeout: ReturnType<typeof setTimeout>;
     const resizeObserver = new ResizeObserver(() => {
-      updateCanvasSize();
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(updateCanvasSize, 200);
     });
 
     resizeObserver.observe(container);
@@ -173,6 +173,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      clearTimeout(resizeTimeout);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
     };

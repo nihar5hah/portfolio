@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { CheckCircle2, Building2, Calendar, MapPin, ChevronDown } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
@@ -26,6 +26,14 @@ import { useParticleBurst } from '@/components/ui/ParticleBurst'
 export function ExperienceTimeline() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const { canvasRef, burst } = useParticleBurst()
+
+  // Size the particle canvas properly
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+  }, [canvasRef])
 
   const handleNodeClick = (e: React.MouseEvent, experienceId: string) => {
     setExpandedId(expandedId === experienceId ? null : experienceId)

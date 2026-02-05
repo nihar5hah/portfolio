@@ -1,216 +1,160 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useCallback } from 'react'
 
 /**
- * Global Interactions Layer
+ * Global Interactions Layer (Optimized)
  *
- * Adds a technical presence across the entire portfolio:
- * - Custom animated cursor
- * - Ambient particle system
- * - Magnetic element attraction
- * - Scroll velocity physics
+ * - Lightweight ambient particle system using refs (no state re-renders)
+ * - Scroll velocity affects particle speed via refs
+ * - Single RAF loop with proper cancellation
+ * - Easter egg: Konami code
  */
 
-export function GlobalInteractions() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [scrollVelocity, setScrollVelocity] = useState(0)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const lastScrollRef = useRef(0)
+const PARTICLE_COUNT = 15
+const ACCENT_R = 99
+const ACCENT_G = 102
+const ACCENT_B = 241
 
-  // Ambient particle system
+export function GlobalInteractions() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const rafRef = useRef<number>(0)
+  const scrollVelocityRef = useRef(0)
+  const particlesRef = useRef<Array<{
+    x: number; y: number; vx: number; vy: number
+    radius: number; opacity: number; speed: number
+  }>>([])
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+    const resize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    resize()
 
-    const particles: Array<{
-      x: number
-      y: number
-      vx: number
-      vy: number
-      radius: number
-      opacity: number
-      speed: number
-    }> = []
-
-    // Initialize particles
-    for (let i = 0; i < 30; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: Math.random() * 2 + 1,
-        opacity: Math.random() * 0.5 + 0.2,
-        speed: 1 + Math.random() * 0.5,
-      })
+    // Initialize particles once
+    if (particlesRef.current.length === 0) {
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particlesRef.current.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          radius: Math.random() * 1.5 + 0.5,
+          opacity: Math.random() * 0.3 + 0.1,
+          speed: 0.5 + Math.random() * 0.5,
+        })
+      }
     }
 
     const animate = () => {
-      ctx.fillStyle = 'rgba(10, 10, 10, 0.1)'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      particles.forEach((p) => {
-        // Movement influenced by scroll velocity
-        const velocityMultiplier = 0.5 + Math.abs(scrollVelocity) * 0.05
+      const vel = Math.min(Math.abs(scrollVelocityRef.current) * 0.02, 2)
+      const particles = particlesRef.current
 
-        p.x += p.vx * p.speed * velocityMultiplier
-        p.y += p.vy * p.speed * velocityMultiplier
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i]
+        const mult = 0.5 + vel
 
-        // Wrap around edges
+        p.x += p.vx * p.speed * mult
+        p.y += p.vy * p.speed * mult
+
         if (p.x < 0) p.x = canvas.width
         if (p.x > canvas.width) p.x = 0
         if (p.y < 0) p.y = canvas.height
         if (p.y > canvas.height) p.y = 0
 
-        // Draw particle
-        ctx.fillStyle = `rgba(99, 102, 241, ${p.opacity * (0.5 + Math.abs(scrollVelocity) * 0.05)})`
+        const alpha = p.opacity * (0.4 + vel * 0.3)
+        ctx.fillStyle = `rgba(${ACCENT_R},${ACCENT_G},${ACCENT_B},${alpha})`
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
         ctx.fill()
-      })
+      }
 
-      requestAnimationFrame(animate)
+      rafRef.current = requestAnimationFrame(animate)
     }
 
-    animate()
+    rafRef.current = requestAnimationFrame(animate)
 
-    const handleResize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+    window.addEventListener('resize', resize, { passive: true })
+
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      window.removeEventListener('resize', resize)
     }
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [scrollVelocity])
-
-  // Mouse tracking for cursor
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Scroll velocity tracking
+  // Scroll velocity via ref (no re-renders)
   useEffect(() => {
     let lastScroll = window.scrollY
-    let velocityTimeout: NodeJS.Timeout
+    let decayTimeout: ReturnType<typeof setTimeout>
 
     const handleScroll = () => {
-      const currentScroll = window.scrollY
-      const delta = currentScroll - lastScroll
-      setScrollVelocity(delta)
-      lastScroll = currentScroll
+      const now = window.scrollY
+      scrollVelocityRef.current = now - lastScroll
+      lastScroll = now
 
-      clearTimeout(velocityTimeout)
-      velocityTimeout = setTimeout(() => setScrollVelocity(0), 100)
+      clearTimeout(decayTimeout)
+      decayTimeout = setTimeout(() => { scrollVelocityRef.current = 0 }, 150)
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', handleScroll)
-      clearTimeout(velocityTimeout)
+      clearTimeout(decayTimeout)
     }
   }, [])
 
   // Easter egg: Konami code
   useEffect(() => {
-    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
-    let konamiIndex = 0
+    const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']
+    let idx = 0
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const key = e.key.length === 1 ? e.key.toLowerCase() : e.key
-      if (key === konamiCode[konamiIndex]) {
-        konamiIndex++
-        if (konamiIndex === konamiCode.length) {
-          triggerEasterEgg()
-          konamiIndex = 0
+    const onKey = (e: KeyboardEvent) => {
+      const k = e.key.length === 1 ? e.key.toLowerCase() : e.key
+      if (k === code[idx]) {
+        idx++
+        if (idx === code.length) {
+          // Trigger burst
+          const canvas = canvasRef.current
+          if (canvas) {
+            const ctx = canvas.getContext('2d')
+            if (ctx) {
+              const cx = canvas.width / 2, cy = canvas.height / 2
+              const colors = ['#6366f1','#818cf8','#a5b4fc','#c7d2fe']
+              for (let i = 0; i < 30; i++) {
+                const angle = (Math.PI * 2 * i) / 30
+                const dist = 20 + Math.random() * 60
+                ctx.fillStyle = colors[i % colors.length]
+                ctx.beginPath()
+                ctx.arc(cx + Math.cos(angle) * dist, cy + Math.sin(angle) * dist, 3, 0, Math.PI * 2)
+                ctx.fill()
+              }
+            }
+          }
+          idx = 0
         }
       } else {
-        konamiIndex = 0
+        idx = 0
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const triggerEasterEgg = () => {
-    // Create a fun rainbow cursor burst
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
-    for (let i = 0; i < 50; i++) {
-      const angle = (Math.PI * 2 * i) / 50
-      const vx = Math.cos(angle) * 3
-      const vy = Math.sin(angle) * 3
-
-      const color = colors[Math.floor(Math.random() * colors.length)]
-      ctx.fillStyle = color
-      ctx.beginPath()
-      ctx.arc(mousePosition.x, mousePosition.y, 3, 0, Math.PI * 2)
-      ctx.fill()
-    }
-  }
-
   return (
-    <>
-      {/* Ambient particle canvas */}
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{ opacity: 0.3 }}
-      />
-
-      {/* Custom cursor */}
-      <motion.div
-        className="fixed w-6 h-6 border-2 border-accent rounded-full pointer-events-none z-50 mix-blend-screen"
-        style={{
-          x: mousePosition.x - 12,
-          y: mousePosition.y - 12,
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 0.6,
-          repeat: Infinity,
-          repeatType: 'mirror',
-        }}
-      />
-
-      {/* Cursor trail */}
-      <motion.div
-        className="fixed w-3 h-3 rounded-full bg-accent/20 pointer-events-none z-40"
-        style={{
-          x: mousePosition.x - 6,
-          y: mousePosition.y - 6,
-        }}
-        transition={{
-          duration: 0.3,
-          ease: 'easeOut',
-        }}
-      />
-
-      <style>{`
-        * {
-          cursor: none;
-        }
-      `}</style>
-    </>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-0"
+      style={{ opacity: 0.25 }}
+    />
   )
 }

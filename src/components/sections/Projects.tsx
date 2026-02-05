@@ -81,20 +81,22 @@ function ProjectCard({
   const contentY = useTransform(scrollYProgress, [0, 1], [20, -20])
   const isFirst = index === 0
 
+  const throttleRef = useRef(false)
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
+    if (!cardRef.current || throttleRef.current) return
+    throttleRef.current = true
 
-    const rect = cardRef.current.getBoundingClientRect()
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    requestAnimationFrame(() => {
+      if (!cardRef.current) return
+      const rect = cardRef.current.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
 
-    const rotX = (y - centerY) / 10
-    const rotY = (centerX - x) / 10
-
-    setRotationX(rotX)
-    setRotationY(rotY)
+      setRotationX((y - rect.height / 2) / 15)
+      setRotationY((rect.width / 2 - x) / 15)
+      throttleRef.current = false
+    })
   }
 
   const handleMouseLeave = () => {

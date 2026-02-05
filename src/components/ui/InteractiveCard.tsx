@@ -281,13 +281,19 @@ export function ShineCard({ children, className, variant = 'secondary' }: ShineC
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isHovered, setIsHovered] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
+  const ticking = useRef(false)
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    setPosition({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+    if (!cardRef.current || ticking.current) return
+    ticking.current = true
+    const x = e.clientX
+    const y = e.clientY
+
+    requestAnimationFrame(() => {
+      if (!cardRef.current) return
+      const rect = cardRef.current.getBoundingClientRect()
+      setPosition({ x: x - rect.left, y: y - rect.top })
+      ticking.current = false
     })
   }, [])
 
