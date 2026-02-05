@@ -17,6 +17,7 @@ export const projects: Project[] = [
       'Webhooks',
     ],
     featured: true,
+    image: '/projects/healthcare-ai.png',
     highlights: [
       'Designed conversational AI for automated clinic call handling',
       'Built dynamic prompt generation for location-specific configurations',
@@ -36,6 +37,7 @@ export const projects: Project[] = [
       'Designed and developed an automated attendance system using computer vision and facial recognition techniques. Implemented real-time multi-face detection and recognition for classroom-scale environments with Supabase integration for secure data management.',
     technologies: ['Python', 'OpenCV', 'Deep Learning', 'Supabase', 'PostgreSQL'],
     featured: true,
+    image: '/projects/faceattend.jpg',
     highlights: [
       'Real-time multi-face detection and recognition',
       'Classroom-scale environment support',

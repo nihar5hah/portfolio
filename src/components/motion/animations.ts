@@ -10,6 +10,9 @@ export const easings = {
   expo: [0.87, 0, 0.13, 1] as const,
   // Gentle ease out
   gentle: [0.25, 0.1, 0.25, 1] as const,
+  // Neural Brutalism: Mechanical, algorithmic easings
+  mechanical: [0.4, 0, 0.6, 1] as const,
+  snap: [0.25, 0.46, 0.45, 0.94] as const,
 }
 
 // Glass reveal animation - for glass cards appearing
@@ -255,4 +258,62 @@ export const scrollScale: ScrollTransformConfig = {
 export const scrollY: ScrollTransformConfig = {
   inputRange: [0, 400],
   outputRange: [0, 100],
+}
+
+// Neural Brutalism: Grid-based stagger animations
+export const gridRevealContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.04,
+      staggerDirection: 1,
+    },
+  },
+}
+
+export const gridRevealItem: Variants = {
+  hidden: {
+    opacity: 0,
+    clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
+  },
+  visible: {
+    opacity: 1,
+    clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+    transition: {
+      duration: 0.4,
+      ease: easings.mechanical,
+    },
+  },
+}
+
+// Mechanical slide animation
+export const mechanicalSlide: Variants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.5,
+      ease: easings.mechanical,
+    },
+  },
+}
+
+// Data-viz style reveal
+export const dataReveal: Variants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.95,
+    filter: 'blur(4px)',
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    filter: 'blur(0px)',
+    transition: {
+      duration: 0.6,
+      ease: easings.snap,
+    },
+  },
 }

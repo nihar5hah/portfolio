@@ -18,6 +18,7 @@ export interface Project {
   technologies: string[]
   featured: boolean
   highlights: string[]
+  image?: string
   links: {
     github?: string
     demo?: string

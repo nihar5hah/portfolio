@@ -12,7 +12,19 @@ import { projects } from '@/data/projects'
 import { cn } from '@/lib/utils'
 import { easings } from '@/components/motion/animations'
 
-function ProjectPlaceholder({ id, isFirst }: { id: string; isFirst: boolean }) {
+function ProjectPlaceholder({ id, isFirst, image }: { id: string; isFirst: boolean; image?: string }) {
+  // If image exists, display it
+  if (image) {
+    return (
+      <img
+        src={image}
+        alt="Project preview"
+        className="w-full h-full object-cover rounded-xl"
+      />
+    )
+  }
+
+  // Otherwise show placeholder gradient
   const gradients: Record<string, string> = {
     'healthcare-ai':
       'from-cyan-500/30 via-blue-500/20 to-purple-500/30',
@@ -82,7 +94,7 @@ function ProjectCard({
           variant={isFirst ? 'primary' : 'secondary'}
           className={cn('aspect-video overflow-hidden rounded-2xl p-0', isFirst && 'glow-accent-subtle')}
         >
-          <ProjectPlaceholder id={project.id} isFirst={isFirst} />
+          <ProjectPlaceholder id={project.id} isFirst={isFirst} image={project.image} />
         </ShineCard>
       </motion.div>
 

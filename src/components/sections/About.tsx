@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
-import { TiltCard } from '@/components/ui/Card'
+import { InteractiveCard, Magnetic } from '@/components/ui/InteractiveCard'
 import { FadeIn } from '@/components/motion/FadeIn'
 import { staggerContainer, staggerItem, easings } from '@/components/motion/animations'
 import { siteConfig } from '@/data/social'
@@ -107,24 +107,32 @@ export function About() {
           >
             {highlights.map((item, index) => (
               <motion.div key={item.title} variants={staggerItem}>
-                <TiltCard
+                <InteractiveCard
                   variant={index === 0 ? 'primary' : 'secondary'}
+                  tilt
+                  tiltIntensity={12}
+                  spotlight
+                  spotlightColor={index === 0 ? 'rgba(99, 102, 241, 0.15)' : 'rgba(99, 102, 241, 0.08)'}
+                  particles={index === 0}
+                  particleCount={2}
                   className="h-full"
                 >
-                  <motion.div
-                    className="p-2 rounded-xl bg-accent/10 w-fit mb-3"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                  >
-                    <item.icon className="w-6 h-6 text-accent" />
-                  </motion.div>
+                  <Magnetic strength={0.25}>
+                    <motion.div
+                      className="p-2 rounded-xl bg-accent/10 w-fit mb-3"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                    >
+                      <item.icon className="w-6 h-6 text-accent" />
+                    </motion.div>
+                  </Magnetic>
                   <h3 className="text-foreground font-semibold mb-1">
                     {item.title}
                   </h3>
                   <p className="text-foreground-muted text-sm">
                     {item.description}
                   </p>
-                </TiltCard>
+                </InteractiveCard>
               </motion.div>
             ))}
           </motion.div>

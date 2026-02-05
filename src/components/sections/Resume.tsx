@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button'
 
 export function Resume() {
   return (
-    <section id="resume" className="section-padding bg-background-secondary">
+    <section id="resume" className="section-padding bg-gradient-to-b from-background-secondary/50 to-background">
       <Container size="narrow">
         <SectionHeading
           title="Resume"
@@ -56,7 +56,7 @@ export function Resume() {
         >
           <div className="inline-flex items-center gap-2 text-foreground-muted text-sm">
             <FileText className="w-4 h-4" />
-            <span>Last updated: May 2025</span>
+            <span>Last updated: February 2026</span>
           </div>
         </motion.div>
       </Container>

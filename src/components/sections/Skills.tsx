@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import * as Icons from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { InteractiveCard, Magnetic } from '@/components/ui/InteractiveCard'
 import { skillCategories } from '@/data/skills'
 import { cn } from '@/lib/utils'
 import { waveContainer, waveItem, easings } from '@/components/motion/animations'
@@ -34,68 +35,76 @@ export function Skills() {
             return (
               <motion.div
                 key={category.id}
-                className={cn(
-                  'p-6',
-                  isPrimary ? 'glass-primary glass-edge glass-vibrancy lg:col-span-2' : 'glass-secondary',
-                  'glass-interactive'
-                )}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{
                   duration: 0.5,
                   delay: categoryIndex * 0.1,
                   ease: easings.smooth,
                 }}
+                className={cn(isPrimary && 'lg:col-span-2')}
               >
-                <div className="flex items-center gap-3 mb-5">
-                  <motion.div
-                    className={cn(
-                      'p-2.5 rounded-xl',
-                      isPrimary ? 'bg-accent/20' : 'bg-accent/10'
-                    )}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                  >
-                    <CategoryIcon
-                      className={cn(
-                        'w-5 h-5',
-                        isPrimary ? 'text-accent' : 'text-accent'
-                      )}
-                    />
-                  </motion.div>
-                  <h3 className="text-lg font-semibold text-foreground">
-                    {category.title}
-                  </h3>
-                </div>
-
-                <motion.div
-                  className="flex flex-wrap gap-2"
-                  variants={waveContainer}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
+                <InteractiveCard
+                  variant={isPrimary ? 'primary' : 'secondary'}
+                  tilt
+                  tiltIntensity={15}
+                  spotlight
+                  spotlightColor={isPrimary ? 'rgba(99, 102, 241, 0.2)' : 'rgba(99, 102, 241, 0.12)'}
+                  particles={isPrimary}
+                  particleCount={3}
                 >
-                  {category.skills.map((skill) => {
-                    const SkillIcon = getIcon(skill.icon)
-                    return (
+                  <div className="flex items-center gap-3 mb-5">
+                    <Magnetic strength={0.2}>
                       <motion.div
-                        key={skill.name}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg glass-tertiary text-sm group"
-                        variants={waveItem}
-                        whileHover={{
-                          scale: 1.05,
-                          borderColor: 'rgba(6, 182, 212, 0.4)',
-                        }}
+                        className={cn(
+                          'p-2.5 rounded-xl',
+                          isPrimary ? 'bg-accent/20' : 'bg-accent/10'
+                        )}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                       >
-                        <SkillIcon className="w-4 h-4 text-foreground-muted group-hover:text-accent transition-colors" />
-                        <span className="text-foreground-secondary group-hover:text-foreground transition-colors">
-                          {skill.name}
-                        </span>
+                        <CategoryIcon
+                          className={cn(
+                            'w-5 h-5',
+                            isPrimary ? 'text-accent' : 'text-accent'
+                          )}
+                        />
                       </motion.div>
-                    )
-                  })}
-                </motion.div>
+                    </Magnetic>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      {category.title}
+                    </h3>
+                  </div>
+
+                  <motion.div
+                    className="flex flex-wrap gap-2"
+                    variants={waveContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
+                    {category.skills.map((skill) => {
+                      const SkillIcon = getIcon(skill.icon)
+                      return (
+                        <motion.div
+                          key={skill.name}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg glass-tertiary text-sm group"
+                          variants={waveItem}
+                          whileHover={{
+                            scale: 1.05,
+                            borderColor: 'rgba(6, 182, 212, 0.4)',
+                          }}
+                        >
+                          <SkillIcon className="w-4 h-4 text-foreground-muted group-hover:text-accent transition-colors" />
+                          <span className="text-foreground-secondary group-hover:text-foreground transition-colors">
+                            {skill.name}
+                          </span>
+                        </motion.div>
+                      )
+                    })}
+                  </motion.div>
+                </InteractiveCard>
               </motion.div>
             )
           })}
