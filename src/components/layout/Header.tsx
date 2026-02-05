@@ -2,16 +2,33 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Moon, Sun } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Container } from './Container'
 import { navItems, siteConfig } from '@/data/social'
 import { easings } from '@/components/motion/animations'
+import { useTheme } from '@/hooks/useTheme'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('')
+  const [mounted, setMounted] = useState(false)
+
+  let theme = 'dark'
+  let toggleTheme = () => {}
+
+  try {
+    const themeContext = useTheme()
+    theme = themeContext.theme
+    toggleTheme = themeContext.toggleTheme
+  } catch {
+    // Theme context not available
+  }
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const { scrollY } = useScroll()
   const headerBlur = useTransform(scrollY, [0, 100], [0, 16])
@@ -58,8 +75,8 @@ export function Header() {
         transition={{ duration: 0.6, ease: easings.smooth }}
         style={{
           backgroundColor: headerBg,
-          backdropFilter: `blur(${headerBlur}px) saturate(180%)`,
-          WebkitBackdropFilter: `blur(${headerBlur}px) saturate(180%)`,
+          backdropFilter: `blur(${headerBlur}px) saturate(200%)`,
+          WebkitBackdropFilter: `blur(${headerBlur}px) saturate(200%)`,
         }}
       >
         <motion.div
@@ -79,7 +96,7 @@ export function Header() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span className="text-xl font-bold text-foreground">
+              <span className="font-serif text-2xl font-medium text-foreground">
                 Nihar<span className="text-accent">.</span>
               </span>
             </motion.a>
@@ -92,14 +109,16 @@ export function Header() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05, duration: 0.3 }}
                 >
-                  <button
+                  <motion.button
                     onClick={() => handleNavClick(item.href)}
                     className={cn(
-                      'relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300',
+                      'relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 hover:text-foreground group',
                       activeSection === item.href.slice(1)
                         ? 'text-accent'
-                        : 'text-foreground-secondary hover:text-foreground'
+                        : 'text-foreground-secondary'
                     )}
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     {activeSection === item.href.slice(1) && (
                       <motion.span
@@ -109,11 +128,54 @@ export function Header() {
                       />
                     )}
                     <span className="relative z-10">{item.label}</span>
-                  </button>
+                    {/* Underline animation on hover */}
+                    <motion.span
+                      className="absolute bottom-1 left-4 right-4 h-px bg-accent"
+                      initial={{ scaleX: 0, opacity: 0 }}
+                      whileHover={{ scaleX: 1, opacity: 1 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
+                    />
+                  </motion.button>
                 </motion.li>
               ))}
             </ul>
 
+            {/* Theme toggle */}
+            {mounted && (
+              <motion.button
+                onClick={toggleTheme}
+                className="hidden md:flex p-2 text-foreground-secondary hover:text-accent transition-colors rounded-lg hover:bg-background-secondary/50"
+                aria-label="Toggle theme"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <AnimatePresence mode="wait">
+                  {theme === 'dark' ? (
+                    <motion.div
+                      key="sun"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Sun className="w-5 h-5" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="moon"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Moon className="w-5 h-5" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            )}
+
+            {/* Mobile menu button */}
             <motion.button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="md:hidden p-2 text-foreground-secondary hover:text-foreground transition-colors rounded-lg glass-tertiary"

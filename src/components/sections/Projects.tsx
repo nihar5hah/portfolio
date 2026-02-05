@@ -7,6 +7,7 @@ import { Container } from '@/components/layout/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import { ShineCard } from '@/components/ui/InteractiveCard'
 import { projects } from '@/data/projects'
 import { cn } from '@/lib/utils'
 import { easings } from '@/components/motion/animations'
@@ -77,14 +78,12 @@ function ProjectCard({
         className={cn(index % 2 === 1 && 'lg:col-start-2')}
         style={{ y: imageY }}
       >
-        <div
-          className={cn(
-            'aspect-video rounded-2xl overflow-hidden',
-            isFirst ? 'glass-primary glow-accent-subtle' : 'glass-secondary'
-          )}
+        <ShineCard
+          variant={isFirst ? 'primary' : 'secondary'}
+          className={cn('aspect-video overflow-hidden rounded-2xl p-0', isFirst && 'glow-accent-subtle')}
         >
           <ProjectPlaceholder id={project.id} isFirst={isFirst} />
-        </div>
+        </ShineCard>
       </motion.div>
 
       <motion.div
@@ -154,7 +153,7 @@ function ProjectCard({
 
 export function Projects() {
   return (
-    <section id="projects" className="section-padding bg-background-secondary">
+    <section id="projects" className="section-padding bg-background">
       <Container>
         <SectionHeading
           title="Projects"

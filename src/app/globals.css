@@ -5,6 +5,40 @@
 @layer base {
   :root {
     --radius: 0.75rem;
+
+    /* Dark theme (default) */
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #0f0f0f;
+    --bg-tertiary: #171717;
+    --bg-elevated: #1f1f1f;
+
+    --fg-primary: #ffffff;
+    --fg-secondary: #a3a3a3;
+    --fg-muted: #737373;
+
+    --border-primary: #262626;
+    --border-light: #3f3f3f;
+    --border-glass: rgba(255, 255, 255, 0.06);
+
+    color-scheme: dark;
+  }
+
+  /* Light theme */
+  [data-theme="light"] {
+    --bg-primary: #f5f5f5;
+    --bg-secondary: #ececec;
+    --bg-tertiary: #e0e0e0;
+    --bg-elevated: #d4d4d4;
+
+    --fg-primary: #0a0a0a;
+    --fg-secondary: #5c5c5c;
+    --fg-muted: #a3a3a3;
+
+    --border-primary: #e5e5e5;
+    --border-light: #d4d4d4;
+    --border-glass: rgba(0, 0, 0, 0.06);
+
+    color-scheme: light;
   }
 
   html {
@@ -13,6 +47,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   ::selection {
@@ -133,15 +168,110 @@
   }
 
   /* ========================================
-     Glow Effects
+     Glow Effects (Neural Brutalism: Electric Indigo)
      ======================================== */
 
   .glow-accent {
-    box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
   }
 
   .glow-accent-subtle {
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+  }
+
+  /* ========================================
+     Neural Brutalism: Technical Components
+     ======================================== */
+
+  /* Scanline overlay effect */
+  .scanline-effect {
+    @apply relative;
+  }
+
+  .scanline-effect::before {
+    content: '';
+    @apply absolute inset-0 pointer-events-none z-50;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(99, 102, 241, 0.03) 50%
+    );
+    background-size: 100% 4px;
+    animation: scanline 8s linear infinite;
+  }
+
+  /* Grid pattern (sharper, more technical) */
+  .grid-brutalist {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Terminal-style border */
+  .border-terminal {
+    @apply border border-accent/30;
+    box-shadow:
+      inset 0 0 0 1px rgba(99, 102, 241, 0.1),
+      0 0 10px rgba(99, 102, 241, 0.1);
+  }
+
+  /* Data flow effect */
+  .data-flow {
+    @apply relative overflow-hidden;
+  }
+
+  .data-flow::after {
+    content: '';
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(99, 102, 241, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: dataFlow 3s linear infinite;
+  }
+
+  /* Sharp corners (override default radius) */
+  .brutalist-card {
+    @apply rounded-none border border-border;
+    box-shadow: 4px 4px 0 rgba(99, 102, 241, 0.2);
+  }
+
+  /* Monospace detail text */
+  .text-mono-detail {
+    @apply font-mono text-xs text-foreground-muted tracking-wider uppercase;
+  }
+
+  /* Technical label */
+  .label-tech {
+    @apply font-mono text-[10px] text-accent tracking-widest uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Glitch text effect */
+  .glitch-text {
+    @apply relative inline-block;
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+
+  .glitch-text::before {
+    left: 2px;
+    text-shadow: -2px 0 rgba(99, 102, 241, 0.7);
+    animation: glitch 0.3s infinite;
+  }
+
+  .glitch-text::after {
+    left: -2px;
+    text-shadow: 2px 0 rgba(129, 140, 248, 0.7);
+    animation: glitch 0.3s infinite reverse;
   }
 
   /* ========================================
@@ -260,6 +390,15 @@
   .backface-hidden {
     backface-visibility: hidden;
   }
+
+  /* ========================================
+     Opacity Fade Utilities
+     ======================================== */
+
+  .opacity-fade {
+    mask-image: linear-gradient(to bottom, transparent 0%, black 40%, black 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 40%, black 100%);
+  }
 }
 
 /* ========================================
@@ -284,6 +423,14 @@
 }
 
 /* ========================================
+   Interactive Card Effects
+   ======================================== */
+
+.gradient-border-wrapper {
+  --gradient-angle: 0deg;
+}
+
+/* ========================================
    Reduced Motion Support
    ======================================== */
 
@@ -301,6 +448,10 @@
   }
 
   .shimmer {
+    animation: none;
+  }
+
+  .gradient-border-wrapper {
     animation: none;
   }
 }

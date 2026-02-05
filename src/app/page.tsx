@@ -1,25 +1,29 @@
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { Hero } from '@/components/sections/Hero'
-import { About } from '@/components/sections/About'
-import { Skills } from '@/components/sections/Skills'
+import { HeroNew } from '@/components/sections/HeroNew'
+import { AboutNew } from '@/components/sections/AboutNew'
+import { InteractiveShowcase } from '@/components/sections/InteractiveShowcase'
+import { SkillsNew } from '@/components/sections/SkillsNew'
 import { Projects } from '@/components/sections/Projects'
-import { Experience } from '@/components/sections/Experience'
+import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline'
 import { Resume } from '@/components/sections/Resume'
-import { Contact } from '@/components/sections/Contact'
+import { ContactNew } from '@/components/sections/ContactNew'
 
 export default function Home() {
   return (
     <>
       <Header />
       <main>
-        <Hero />
-        <About />
-        <Skills />
+        <HeroNew />
+        <AboutNew />
+        <SkillsNew />
+        <InteractiveShowcase />
         <Projects />
-        <Experience />
+        <ExperienceTimeline />
         <Resume />
-        <Contact />
+        {/* Heavy fade transition between Resume and Contact */}
+        <div className="relative h-40 md:h-48 bg-gradient-to-b from-background via-background/50 to-transparent overflow-hidden pointer-events-none" />
+        <ContactNew />
       </main>
       <Footer />
     </>

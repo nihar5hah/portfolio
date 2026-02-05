@@ -1,7 +1,27 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { IBM_Plex_Mono, Instrument_Serif } from 'next/font/google'
+import { ThemeProvider } from '@/hooks/useTheme'
+import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import './globals.css'
+
+// Neural Brutalism: Technical display font
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+// Refined elegance: Serif headline font
+const instrumentSerif = Instrument_Serif({
+  weight: ['400'],
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap',
+  style: ['normal', 'italic'],
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://niharshah.dev'),
@@ -68,9 +88,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${ibmPlexMono.variable} ${instrumentSerif.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">
-        {children}
+        <ThemeProvider>
+          <ScrollProgress />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
