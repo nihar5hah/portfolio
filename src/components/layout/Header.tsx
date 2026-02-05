@@ -75,12 +75,13 @@ export function Header() {
           <nav className="flex items-center justify-between h-16 md:h-20">
             <motion.a
               href="#"
-              className="flex items-center gap-1 hover:opacity-80 transition-opacity duration-300"
+              className="hover:opacity-80 transition-opacity duration-300"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span className="text-xl font-bold text-foreground">Nihar</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              <span className="text-xl font-bold text-foreground">
+                Nihar<span className="text-accent">.</span>
+              </span>
             </motion.a>
 
             <ul className="hidden md:flex items-center gap-1">
