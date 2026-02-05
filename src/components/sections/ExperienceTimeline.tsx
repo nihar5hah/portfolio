@@ -98,7 +98,7 @@ export function ExperienceTimeline() {
                 >
                   {/* Timeline node */}
                   <motion.div
-                    className="absolute left-0 md:left-1/2 top-0 transform -translate-x-1/2 z-20 cursor-pointer"
+                    className="absolute left-0 md:left-1/2 top-6 transform -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer"
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true }}
@@ -126,7 +126,7 @@ export function ExperienceTimeline() {
 
                   {/* Content wrapper */}
                   <div className={cn(
-                    'w-full md:w-1/2 md:pt-0',
+                    'w-full md:w-1/2 pt-6 md:pt-0',
                     isEven ? 'md:pr-16 md:text-right' : 'md:pl-16 md:ml-auto'
                   )}>
                     {/* Experience card */}
