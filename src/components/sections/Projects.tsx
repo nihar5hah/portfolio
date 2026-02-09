@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
+import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { ExternalLink, Github, ChevronRight } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
@@ -24,13 +25,17 @@ const useIsHoverDevice = () => {
 }
 
 function ProjectPlaceholder({ id, isFirst, image }: { id: string; isFirst: boolean; image?: string }) {
-  // If image exists, display it
+  // If image exists, display it with Next.js optimization
   if (image) {
     return (
-      <img
+      <Image
         src={image}
         alt="Project preview"
-        className="w-full h-full object-cover rounded-xl"
+        fill
+        className="object-cover rounded-xl"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw"
+        priority={isFirst}
+        quality={75}
       />
     )
   }
@@ -82,13 +87,14 @@ function ProjectCard({
   const [rotationY, setRotationY] = useState(0)
   const isHoverDevice = useIsHoverDevice()
 
+  // Only use scroll transforms on desktop (hover devices)
   const { scrollYProgress } = useScroll({
     target: cardRef,
     offset: ['start end', 'end start'],
   })
 
-  const imageY = useTransform(scrollYProgress, [0, 1], [40, -40])
-  const contentY = useTransform(scrollYProgress, [0, 1], [20, -20])
+  const imageY = useTransform(scrollYProgress, [0, 1], isHoverDevice ? [40, -40] : [0, 0])
+  const contentY = useTransform(scrollYProgress, [0, 1], isHoverDevice ? [20, -20] : [0, 0])
   const isFirst = index === 0
 
   const throttleRef = useRef(false)

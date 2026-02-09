@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
@@ -16,9 +16,19 @@ import { cn } from '@/lib/utils'
  * - Scroll-triggered animations
  */
 
+// Check if device supports hover
+const useIsHoverDevice = () => {
+  const [isHover, setIsHover] = useState(true)
+  useEffect(() => {
+    setIsHover(!window.matchMedia('(hover: none)').matches)
+  }, [])
+  return isHover
+}
+
 export function HeroNew() {
   const heroRef = useRef<HTMLDivElement>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const isHoverDevice = useIsHoverDevice()
 
   // Cursor-following orb animation
   const orb1X = useMotionValue(0)
@@ -33,7 +43,7 @@ export function HeroNew() {
   const springOrb2Y = useSpring(orb2Y, springConfig)
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!heroRef.current) return
+    if (!heroRef.current || !isHoverDevice) return
     const rect = heroRef.current.getBoundingClientRect()
     // Center blob on cursor (blob is 384px = w-96, so offset by half)
     const x = e.clientX - rect.left - 192
@@ -48,7 +58,7 @@ export function HeroNew() {
     // Secondary orb - offset for layered effect with parallax
     orb2X.set(x * 0.6) // Slower parallax movement
     orb2Y.set(y * 0.6)
-  }, [orb1X, orb1Y, orb2X, orb2Y])
+  }, [orb1X, orb1Y, orb2X, orb2Y, isHoverDevice])
 
   const handleMouseLeave = useCallback(() => {
     orb1X.set(0)
@@ -62,14 +72,14 @@ export function HeroNew() {
       ref={heroRef}
       id="hero"
       className="relative min-h-screen flex items-center overflow-hidden bg-background"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={isHoverDevice ? handleMouseMove : undefined}
+      onMouseLeave={isHoverDevice ? handleMouseLeave : undefined}
     >
       {/* Grid background */}
-      <div className="absolute inset-0 grid-brutalist opacity-20" />
+      <div className="absolute inset-0 grid-brutalist opacity-20 hidden md:block" />
 
-      {/* Scanline effect */}
-      <div className="scanline-effect absolute inset-0" />
+      {/* Scanline effect - desktop only */}
+      {isHoverDevice && <div className="scanline-effect absolute inset-0 hidden md:block" />}
 
       {/* Interactive cursor-following orbs */}
       <motion.div
