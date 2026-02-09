@@ -25,7 +25,6 @@ const isMobileOrLowPower = () => {
   const isTouchDevice = () => {
     return (
       (navigator.maxTouchPoints > 0) ||
-      (navigator.msMaxTouchPoints > 0) ||
       window.matchMedia('(hover: none)').matches
     )
   }
