@@ -2,6 +2,28 @@ import { Project } from '@/types'
 
 export const projects: Project[] = [
   {
+    id: 'hireai',
+    title: 'HireAI',
+    description:
+      'AI-powered job assessment and screening platform that evaluates candidates based on job requirements.',
+    longDescription:
+      'Designed and built an AI-driven platform to evaluate candidates strictly based on job requirements. Developed during a 24-hour hackathon, the system automatically analyzes job descriptions to generate role-specific assessments including objective, subjective, and coding questions. Focused on reducing fake or unqualified applications through skill-centric, transparent evaluation workflows.',
+    technologies: ['AI/ML', 'LLMs', 'Job Analysis', 'Assessment Generation', 'Rapid Prototyping'],
+    featured: true,
+    image: undefined,
+    highlights: [
+      'AI-driven platform to evaluate candidates based on job requirements',
+      'Developed during a 24-hour hackathon with rapid execution',
+      'Automatic job description analysis to generate role-specific assessments',
+      'Generates objective, subjective, and coding questions',
+      'Reduces fake or unqualified applications through skill-centric evaluation',
+      'Transparent evaluation workflows for fair candidate assessment',
+    ],
+    links: {
+      github: 'https://github.com/nihar5hah',
+    },
+  },
+  {
     id: 'healthcare-ai',
     title: 'Healthcare AI Voice Assistant & Prompt Generator',
     description:
