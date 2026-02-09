@@ -31,8 +31,9 @@ function ProjectPlaceholder({ id, isFirst, image }: { id: string; isFirst: boole
       <Image
         src={image}
         alt="Project preview"
-        fill
-        className="object-cover rounded-xl"
+        width={1280}
+        height={720}
+        className="w-full h-full object-cover"
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw"
         priority={isFirst}
         quality={75}
