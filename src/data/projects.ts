@@ -10,7 +10,7 @@ export const projects: Project[] = [
       'Designed and built an AI-driven platform to evaluate candidates strictly based on job requirements. Developed during a 24-hour hackathon, the system automatically analyzes job descriptions to generate role-specific assessments including objective, subjective, and coding questions. Focused on reducing fake or unqualified applications through skill-centric, transparent evaluation workflows.',
     technologies: ['AI/ML', 'LLMs', 'Job Analysis', 'Assessment Generation', 'Rapid Prototyping'],
     featured: true,
-    image: undefined,
+    image: '/projects/hireai.png',
     highlights: [
       'AI-driven platform to evaluate candidates based on job requirements',
       'Developed during a 24-hour hackathon with rapid execution',
