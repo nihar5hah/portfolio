@@ -20,7 +20,7 @@ export const projects: Project[] = [
       'Transparent evaluation workflows for fair candidate assessment',
     ],
     links: {
-      github: 'https://github.com/nihar5hah',
+      github: 'https://github.com/nihar5hah/HireAI',
     },
   },
   {
@@ -67,7 +67,7 @@ export const projects: Project[] = [
       'Optimized recognition accuracy through testing and tuning',
     ],
     links: {
-      github: 'https://github.com/nihar5hah',
+      github: 'https://github.com/nihar5hah/FaceAttend',
     },
   },
 ]
