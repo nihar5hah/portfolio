@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { ExternalLink, Github, ChevronRight } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
@@ -13,6 +13,15 @@ import { projects } from '@/data/projects'
 import { cn } from '@/lib/utils'
 import { easings } from '@/components/motion/animations'
 import type { Project } from '@/types'
+
+// Check if device supports hover (desktop) vs touch
+const useIsHoverDevice = () => {
+  const [isHover, setIsHover] = useState(true)
+  useEffect(() => {
+    setIsHover(!window.matchMedia('(hover: none)').matches)
+  }, [])
+  return isHover
+}
 
 function ProjectPlaceholder({ id, isFirst, image }: { id: string; isFirst: boolean; image?: string }) {
   // If image exists, display it
@@ -71,6 +80,7 @@ function ProjectCard({
   const cardRef = useRef<HTMLDivElement>(null)
   const [rotationX, setRotationX] = useState(0)
   const [rotationY, setRotationY] = useState(0)
+  const isHoverDevice = useIsHoverDevice()
 
   const { scrollYProgress } = useScroll({
     target: cardRef,
@@ -84,7 +94,7 @@ function ProjectCard({
   const throttleRef = useRef(false)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || throttleRef.current) return
+    if (!cardRef.current || throttleRef.current || !isHoverDevice) return
     throttleRef.current = true
 
     requestAnimationFrame(() => {
@@ -126,8 +136,8 @@ function ProjectCard({
         className={cn(index % 2 === 1 && 'lg:col-start-2', 'cursor-pointer')}
         style={{
           y: imageY,
-          rotateX: rotationX,
-          rotateY: rotationY,
+          rotateX: isHoverDevice ? rotationX : 0,
+          rotateY: isHoverDevice ? rotationY : 0,
           transformStyle: 'preserve-3d',
         } as any}
         onClick={() => onOpenModal(project)}

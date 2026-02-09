@@ -3,9 +3,10 @@
 import { useEffect, useRef, useCallback } from 'react'
 
 /**
- * Global Interactions Layer (Optimized)
+ * Global Interactions Layer (Mobile Optimized)
  *
  * - Lightweight ambient particle system using refs (no state re-renders)
+ * - Disabled on mobile and low-power devices to prevent lag
  * - Scroll velocity affects particle speed via refs
  * - Single RAF loop with proper cancellation
  * - Easter egg: Konami code
@@ -16,6 +17,30 @@ const ACCENT_R = 99
 const ACCENT_G = 102
 const ACCENT_B = 241
 
+// Detect if device is mobile or low-power
+const isMobileOrLowPower = () => {
+  if (typeof window === 'undefined') return false
+
+  // Check for touch device
+  const isTouchDevice = () => {
+    return (
+      (navigator.maxTouchPoints > 0) ||
+      (navigator.msMaxTouchPoints > 0) ||
+      window.matchMedia('(hover: none)').matches
+    )
+  }
+
+  // Check for low RAM devices
+  const hasLowRAM = () => {
+    if ('deviceMemory' in navigator) {
+      return (navigator as any).deviceMemory < 4
+    }
+    return false
+  }
+
+  return isTouchDevice() || hasLowRAM()
+}
+
 export function GlobalInteractions() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rafRef = useRef<number>(0)
@@ -25,9 +50,12 @@ export function GlobalInteractions() {
     radius: number; opacity: number; speed: number
   }>>([])
 
+  // Skip particles on mobile/low-power devices
+  const isLowPowerDevice = isMobileOrLowPower()
+
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!canvas || isLowPowerDevice) return
 
     const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
@@ -151,10 +179,14 @@ export function GlobalInteractions() {
   }, [])
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.25 }}
-    />
+    <>
+      {!isLowPowerDevice && (
+        <canvas
+          ref={canvasRef}
+          className="fixed inset-0 pointer-events-none z-0"
+          style={{ opacity: 0.25 }}
+        />
+      )}
+    </>
   )
 }

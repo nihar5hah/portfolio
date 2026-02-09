@@ -4,6 +4,15 @@ import { useRef, useState, useCallback, useEffect } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
+// Check if device supports hover (desktop) vs touch
+const useIsHoverDevice = () => {
+  const [isHover, setIsHover] = useState(true)
+  useEffect(() => {
+    setIsHover(!window.matchMedia('(hover: none)').matches)
+  }, [])
+  return isHover
+}
+
 type GlassVariant = 'primary' | 'secondary' | 'tertiary'
 
 interface InteractiveCardProps {
@@ -98,6 +107,7 @@ export function InteractiveCard({
 }: InteractiveCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
+  const isHoverDevice = useIsHoverDevice()
 
   // Mouse position relative to card center
   const mouseX = useMotionValue(0)
@@ -113,7 +123,7 @@ export function InteractiveCard({
   const spotlightY = useMotionValue(50)
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
+    if (!cardRef.current || !isHoverDevice) return
 
     const rect = cardRef.current.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2
@@ -131,11 +141,11 @@ export function InteractiveCard({
     const percentY = ((e.clientY - rect.top) / rect.height) * 100
     spotlightX.set(percentX)
     spotlightY.set(percentY)
-  }, [mouseX, mouseY, spotlightX, spotlightY])
+  }, [mouseX, mouseY, spotlightX, spotlightY, isHoverDevice])
 
   const handleMouseEnter = useCallback(() => {
-    setIsHovered(true)
-  }, [])
+    if (isHoverDevice) setIsHovered(true)
+  }, [isHoverDevice])
 
   const handleMouseLeave = useCallback(() => {
     setIsHovered(false)
@@ -156,8 +166,8 @@ export function InteractiveCard({
       )}
       style={{
         transformStyle: 'preserve-3d',
-        rotateX: tilt ? rotateX : 0,
-        rotateY: tilt ? rotateY : 0,
+        rotateX: tilt && isHoverDevice ? rotateX : 0,
+        rotateY: tilt && isHoverDevice ? rotateY : 0,
       }}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
@@ -193,8 +203,8 @@ export function InteractiveCard({
         />
       )}
 
-      {/* Spotlight glow effect */}
-      {spotlight && (
+      {/* Spotlight glow effect - only on hover devices */}
+      {spotlight && isHoverDevice && (
         <motion.div
           className="absolute inset-0 pointer-events-none rounded-[inherit] opacity-0 transition-opacity duration-300"
           style={{
@@ -282,9 +292,10 @@ export function ShineCard({ children, className, variant = 'secondary' }: ShineC
   const [isHovered, setIsHovered] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const ticking = useRef(false)
+  const isHoverDevice = useIsHoverDevice()
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!cardRef.current || ticking.current) return
+    if (!cardRef.current || ticking.current || !isHoverDevice) return
     ticking.current = true
     const x = e.clientX
     const y = e.clientY
@@ -295,7 +306,7 @@ export function ShineCard({ children, className, variant = 'secondary' }: ShineC
       setPosition({ x: x - rect.left, y: y - rect.top })
       ticking.current = false
     })
-  }, [])
+  }, [isHoverDevice])
 
   return (
     <motion.div
@@ -306,7 +317,7 @@ export function ShineCard({ children, className, variant = 'secondary' }: ShineC
         className
       )}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => isHoverDevice && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -314,38 +325,42 @@ export function ShineCard({ children, className, variant = 'secondary' }: ShineC
       transition={{ duration: 0.5 }}
       whileHover={{ y: -4 }}
     >
-      {/* Shine effect */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          width: 200,
-          height: 200,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%)',
-          left: position.x - 100,
-          top: position.y - 100,
-          filter: 'blur(20px)',
-        }}
-        animate={{
-          opacity: isHovered ? 1 : 0,
-          scale: isHovered ? 1 : 0.8,
-        }}
-        transition={{ duration: 0.2 }}
-      />
+      {/* Shine effect - only on hover devices */}
+      {isHoverDevice && (
+        <>
+          <motion.div
+            className="absolute pointer-events-none"
+            style={{
+              width: 200,
+              height: 200,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%)',
+              left: position.x - 100,
+              top: position.y - 100,
+              filter: 'blur(20px)',
+            }}
+            animate={{
+              opacity: isHovered ? 1 : 0,
+              scale: isHovered ? 1 : 0.8,
+            }}
+            transition={{ duration: 0.2 }}
+          />
 
-      {/* Border shine */}
-      <motion.div
-        className="absolute inset-0 rounded-[inherit] pointer-events-none"
-        style={{
-          background: `radial-gradient(300px circle at ${position.x}px ${position.y}px, rgba(99, 102, 241, 0.4), transparent 40%)`,
-          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-          maskComposite: 'xor',
-          WebkitMaskComposite: 'xor',
-          padding: '1px',
-        }}
-        animate={{ opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.2 }}
-      />
+          {/* Border shine */}
+          <motion.div
+            className="absolute inset-0 rounded-[inherit] pointer-events-none"
+            style={{
+              background: `radial-gradient(300px circle at ${position.x}px ${position.y}px, rgba(99, 102, 241, 0.4), transparent 40%)`,
+              mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+              maskComposite: 'xor',
+              WebkitMaskComposite: 'xor',
+              padding: '1px',
+            }}
+            animate={{ opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.2 }}
+          />
+        </>
+      )}
 
       <div className="relative z-10">{children}</div>
     </motion.div>
