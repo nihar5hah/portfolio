@@ -16,6 +16,11 @@ export const socialLinks: SocialLink[] = [
     url: 'mailto:niharshah0405@gmail.com',
     icon: 'Mail',
   },
+  {
+    name: 'Phone',
+    url: 'tel:+919925016026',
+    icon: 'Phone',
+  },
 ]
 
 export const navItems: NavItem[] = [

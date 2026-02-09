@@ -69,32 +69,60 @@ export function ContactNew() {
             Feel free to reach out if you want to collaborate or just chat about AI and technology.
           </motion.p>
 
-          {/* Email CTA */}
-          <motion.a
-            href={socialLinks.find(link => link.name === 'Email')?.url || 'mailto:niharshah0405@gmail.com'}
-            className={cn(
-              'relative inline-flex items-center gap-3 px-8 py-4 rounded-lg overflow-hidden group',
-              'bg-gradient-to-r from-accent to-accent-light text-background',
-              'font-medium hover:shadow-lg hover:shadow-accent/30',
-              'transition-all duration-300'
-            )}
+          {/* Contact CTAs */}
+          <motion.div
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 20 }}
-            whileHover={{ y: -4, scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
+            transition={{ delay: 0.3 }}
           >
-            {/* Shimmer effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-              initial={{ x: '-100%' }}
-              whileHover={{ x: '100%' }}
-              transition={{ duration: 0.6, ease: 'easeInOut' }}
-            />
-            <span className="relative z-10">Send me an email</span>
-            <Icons.ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-          </motion.a>
+            {/* Email CTA */}
+            <motion.a
+              href={socialLinks.find(link => link.name === 'Email')?.url || 'mailto:niharshah0405@gmail.com'}
+              className={cn(
+                'relative inline-flex items-center gap-3 px-8 py-4 rounded-lg overflow-hidden group',
+                'bg-gradient-to-r from-accent to-accent-light text-background',
+                'font-medium hover:shadow-lg hover:shadow-accent/30',
+                'transition-all duration-300'
+              )}
+              whileHover={{ y: -4, scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {/* Shimmer effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '100%' }}
+                transition={{ duration: 0.6, ease: 'easeInOut' }}
+              />
+              <span className="relative z-10">Send me an email</span>
+              <Icons.Mail className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+            </motion.a>
+
+            {/* Phone CTA */}
+            <motion.a
+              href="tel:+919925016026"
+              className={cn(
+                'relative inline-flex items-center gap-3 px-8 py-4 rounded-lg overflow-hidden group',
+                'bg-background-secondary border border-accent/30 text-foreground',
+                'font-medium hover:border-accent hover:shadow-lg hover:shadow-accent/20',
+                'transition-all duration-300'
+              )}
+              whileHover={{ y: -4, scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {/* Hover effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '100%' }}
+                transition={{ duration: 0.6, ease: 'easeInOut' }}
+              />
+              <span className="relative z-10">Call me</span>
+              <Icons.Phone className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+            </motion.a>
+          </motion.div>
 
           {/* Social Links */}
           <motion.div
