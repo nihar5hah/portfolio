@@ -98,7 +98,7 @@ export function ExperienceTimeline() {
                 >
                   {/* Timeline node */}
                   <motion.div
-                    className="absolute left-0 md:left-1/2 top-8 md:top-8 transform -translate-x-1/2 z-20 cursor-pointer"
+                    className="absolute left-0 md:left-1/2 top-8 md:top-8 md:-translate-x-1/2 z-20 cursor-pointer"
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true }}
