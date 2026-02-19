@@ -55,9 +55,9 @@ export function ChatWidget() {
                   {m.role === 'user' ? (
                     m.content
                   ) : (
-                    <ReactMarkdown className="prose prose-invert prose-p:my-0 prose-strong:font-semibold">
-                      {m.content}
-                    </ReactMarkdown>
+                    <div className="prose prose-invert prose-p:my-0 prose-strong:font-semibold">
+                      <ReactMarkdown>{m.content}</ReactMarkdown>
+                    </div>
                   )}
                 </div>
               ))}
