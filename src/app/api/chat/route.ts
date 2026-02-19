@@ -1,10 +1,18 @@
 import { NextRequest } from 'next/server'
+import { createOpenAI } from '@ai-sdk/openai'
+import { streamText } from 'ai'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const KILO_API_KEY = process.env.KILO_API_KEY
 const KILO_API_URL = 'https://api.kilo.ai/api/gateway'
+
+const kilo = createOpenAI({
+  baseURL: KILO_API_URL,
+  apiKey: KILO_API_KEY,
+  compatibility: 'strict',
+})
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase env variables')
@@ -58,9 +66,17 @@ export async function POST(req: NextRequest) {
     match_count: 5,
   })
 
-  const context = (matches || [])
-    .map((m: any) => m.content)
-    .join('\n---\n')
+  let contextChunks = (matches || []).map((m: any) => m.content)
+  if (contextChunks.length === 0) {
+    const { data: fallback } = await supabase
+      .from('portfolio_embeddings')
+      .select('content')
+      .order('created_at', { ascending: false })
+      .limit(5)
+    contextChunks = (fallback || []).map((m: any) => m.content)
+  }
+
+  const context = contextChunks.join('\n---\n')
 
   const systemPrompt = `You are Nihar Shah's personal assistant chatbot. You ONLY answer questions about Nihar Shah — his background, skills, projects, experience, education, and how to contact him.
 
@@ -70,33 +86,16 @@ Be concise, friendly, and helpful. Use the provided context to answer accurately
 
   const contextMessage = `Context:\n${context}\n\nQuestion: ${userMessage}`
 
-  const response = await fetch(`${KILO_API_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${KILO_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'z-ai/glm-5:free',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: contextMessage },
-      ],
+  const result = await streamText({
+    model: kilo.chat('z-ai/glm-5:free'),
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: contextMessage },
+    ],
+    providerOptions: {
       reasoning: { enabled: false },
-      stream: true,
-    }),
-  })
-
-  if (!response.ok || !response.body) {
-    return new Response('Kilo request failed', { status: 500 })
-  }
-
-  return new Response(response.body, {
-    status: 200,
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive',
     },
   })
+
+  return result.toTextStreamResponse()
 }
