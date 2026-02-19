@@ -12,7 +12,6 @@ const nextConfig = {
   swcMinify: true,
   experimental: {
     optimizePackageImports: ['lucide-react'],
-    serverComponentsExternalPackages: ['@xenova/transformers', 'onnxruntime-node'],
   },
 }
 
