@@ -5,6 +5,7 @@ import { IBM_Plex_Mono, Instrument_Serif } from 'next/font/google'
 import { ThemeProvider } from '@/hooks/useTheme'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import { GlobalInteractions } from '@/components/layout/GlobalInteractions'
+import { ChatWidget } from '@/components/ui/ChatWidget'
 import './globals.css'
 
 // Neural Brutalism: Technical display font
@@ -95,6 +96,7 @@ export default function RootLayout({
           <GlobalInteractions />
           <ScrollProgress />
           {children}
+          <ChatWidget />
         </ThemeProvider>
       </body>
     </html>
