@@ -1,23 +1,17 @@
 import { createClient } from '@supabase/supabase-js'
 import { pipeline } from '@xenova/transformers'
-import { resume } from '../src/data/resume'
-import { projects } from '../src/data/projects'
-import { experiences } from '../src/data/experience'
-import { skillCategories as skills } from '../src/data/skills'
-import { siteConfig } from '../src/data/social'
-import { chatbotContext } from '../src/data/chatbot-context'
 import fs from 'fs'
 import path from 'path'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-if (!supabaseUrl || !supabaseKey) {
+if (!supabaseUrl || !serviceRoleKey) {
   console.error('Missing Supabase env vars')
   process.exit(1)
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabase = createClient(supabaseUrl, serviceRoleKey)
 
 let embeddingModel: any = null
 async function getEmbeddingModel() {
@@ -37,9 +31,16 @@ const chunkText = (text: string, size = 1500) => {
   return chunks
 }
 
-const buildContent = () => {
+const buildContent = async () => {
   const aboutPath = path.join(process.cwd(), 'src/components/sections/AboutNew.tsx')
   const aboutSource = fs.readFileSync(aboutPath, 'utf8')
+
+  const { resume } = await import('../src/data/resume')
+  const { projects } = await import('../src/data/projects')
+  const { experiences } = await import('../src/data/experience')
+  const { skillCategories } = await import('../src/data/skills')
+  const { siteConfig } = await import('../src/data/social')
+  const { chatbotContext } = await import('../src/data/chatbot-context')
 
   const payloads: { content: string; source: string; metadata?: Record<string, unknown> }[] = []
 
@@ -56,7 +57,7 @@ const buildContent = () => {
     source: 'experience',
   })
   payloads.push({
-    content: JSON.stringify(skills, null, 2),
+    content: JSON.stringify(skillCategories, null, 2),
     source: 'skills',
   })
   payloads.push({
@@ -76,7 +77,7 @@ const buildContent = () => {
 }
 
 const main = async () => {
-  const contentItems = buildContent()
+  const contentItems = await buildContent()
 
   for (const item of contentItems) {
     const chunks = chunkText(item.content)

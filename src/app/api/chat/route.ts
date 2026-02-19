@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const KILO_API_KEY = process.env.KILO_API_KEY
-const KILO_API_URL = 'https://opencode.ai/zen/v1'
+const KILO_API_URL = 'https://api.kilo.ai/api/gateway'
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase env variables')
@@ -77,11 +77,12 @@ Be concise, friendly, and helpful. Use the provided context to answer accurately
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'glm-5',
+      model: 'z-ai/glm-5:free',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: contextMessage },
       ],
+      reasoning: { enabled: false },
       stream: true,
     }),
   })
