@@ -5,7 +5,7 @@ create extension if not exists vector;
 create table if not exists portfolio_embeddings (
   id uuid primary key default gen_random_uuid(),
   content text not null,
-  embedding vector(1536),
+  embedding vector(384),
   metadata jsonb,
   source text,
   created_at timestamptz default now()
@@ -21,7 +21,7 @@ create policy "Allow public read" on portfolio_embeddings for select using (true
 
 -- Similarity search function
 create or replace function match_portfolio_embeddings(
-  query_embedding vector(1536),
+  query_embedding vector(384),
   match_count int
 )
 returns table (

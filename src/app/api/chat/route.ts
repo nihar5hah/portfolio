@@ -1,16 +1,28 @@
 import { NextRequest } from 'next/server'
-import { openai } from '@ai-sdk/openai'
-import { streamText, embed } from 'ai'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const KILO_API_KEY = process.env.KILO_API_KEY
+const KILO_API_URL = 'https://opencode.ai/zen/v1'
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase env variables')
 }
+if (!KILO_API_KEY) {
+  throw new Error('Missing KILO_API_KEY')
+}
 
 const supabase = createClient(supabaseUrl, supabaseKey)
+
+let embeddingModel: any = null
+async function getEmbeddingModel() {
+  if (!embeddingModel) {
+    const { pipeline } = await import('@xenova/transformers')
+    embeddingModel = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2')
+  }
+  return embeddingModel
+}
 
 const limiter = new Map<string, { count: number; ts: number }>()
 const LIMIT = 10
@@ -37,10 +49,9 @@ export async function POST(req: NextRequest) {
   const { messages } = await req.json()
   const userMessage = messages?.[messages.length - 1]?.content || ''
 
-  const { embedding } = await embed({
-    model: openai.embedding('text-embedding-3-small'),
-    value: userMessage,
-  })
+  const model = await getEmbeddingModel()
+  const output = await model(userMessage, { pooling: 'mean', normalize: true })
+  const embedding = Array.from(output.data as Float32Array)
 
   const { data: matches } = await supabase.rpc('match_portfolio_embeddings', {
     query_embedding: embedding,
@@ -51,20 +62,40 @@ export async function POST(req: NextRequest) {
     .map((m: any) => m.content)
     .join('\n---\n')
 
-  const system = `You are Nihar Shah's personal assistant chatbot. You ONLY answer questions about Nihar Shah — his background, skills, projects, experience, education, and how to contact him.
+  const systemPrompt = `You are Nihar Shah's personal assistant chatbot. You ONLY answer questions about Nihar Shah — his background, skills, projects, experience, education, and how to contact him.
 
 If asked about anything else, politely say: "I can only help with questions about Nihar Shah. Feel free to ask about his projects, experience, or skills!"
 
 Be concise, friendly, and helpful. Use the provided context to answer accurately. If the context doesn't contain the answer, say you don't have that information.`
 
-  const result = await streamText({
-    model: openai('gpt-4o-mini'),
-    system,
-    messages: [
-      { role: 'system', content: system },
-      { role: 'user', content: `Context:\n${context}\n\nQuestion: ${userMessage}` },
-    ],
+  const contextMessage = `Context:\n${context}\n\nQuestion: ${userMessage}`
+
+  const response = await fetch(`${KILO_API_URL}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${KILO_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'glm-5',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: contextMessage },
+      ],
+      stream: true,
+    }),
   })
 
-  return result.toTextStreamResponse()
+  if (!response.ok || !response.body) {
+    return new Response('Kilo request failed', { status: 500 })
+  }
+
+  return new Response(response.body, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+    },
+  })
 }

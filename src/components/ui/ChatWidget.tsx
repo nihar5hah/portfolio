@@ -79,19 +79,43 @@ export function ChatWidget() {
                   if (!response.body) throw new Error('No response')
                   const reader = response.body.getReader()
                   const decoder = new TextDecoder()
+                  let buffer = ''
                   let assistant = ''
+
                   while (true) {
                     const { value, done } = await reader.read()
                     if (done) break
-                    assistant += decoder.decode(value, { stream: true })
-                    setMessages((prev) => {
-                      const next = [...prev]
-                      if (next.length > 0 && next[next.length - 1].role === 'assistant') {
-                        next[next.length - 1] = { role: 'assistant', content: assistant }
-                        return next
+                    buffer += decoder.decode(value, { stream: true })
+
+                    const lines = buffer.split('\n')
+                    buffer = lines.pop() || ''
+
+                    for (const line of lines) {
+                      const trimmed = line.trim()
+                      if (!trimmed.startsWith('data:')) continue
+                      const data = trimmed.replace(/^data:\s*/, '')
+                      if (data === '[DONE]') continue
+                      try {
+                        const json = JSON.parse(data)
+                        const delta =
+                          json?.choices?.[0]?.delta?.content ??
+                          json?.choices?.[0]?.message?.content ??
+                          ''
+                        if (delta) {
+                          assistant += delta
+                          setMessages((prev) => {
+                            const next = [...prev]
+                            if (next.length > 0 && next[next.length - 1].role === 'assistant') {
+                              next[next.length - 1] = { role: 'assistant', content: assistant }
+                              return next
+                            }
+                            return [...next, { role: 'assistant', content: assistant }]
+                          })
+                        }
+                      } catch {
+                        // ignore JSON parse errors for partial chunks
                       }
-                      return [...next, { role: 'assistant', content: assistant }]
-                    })
+                    }
                   }
                 } catch {
                   setMessages((prev) => [...prev, { role: 'assistant', content: 'Sorry — I could not respond.' }])

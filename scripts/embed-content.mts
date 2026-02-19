@@ -1,10 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
-import { embed } from 'ai'
-import { openai } from '@ai-sdk/openai'
+import { pipeline } from '@xenova/transformers'
 import { resume } from '../src/data/resume'
 import { projects } from '../src/data/projects'
 import { experiences } from '../src/data/experience'
-import { skills } from '../src/data/skills'
+import { skillCategories as skills } from '../src/data/skills'
 import { siteConfig } from '../src/data/social'
 import { chatbotContext } from '../src/data/chatbot-context'
 import fs from 'fs'
@@ -12,18 +11,21 @@ import path from 'path'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-const openaiKey = process.env.OPENAI_API_KEY
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('Missing Supabase env vars')
   process.exit(1)
 }
-if (!openaiKey) {
-  console.error('Missing OPENAI_API_KEY')
-  process.exit(1)
-}
 
 const supabase = createClient(supabaseUrl, supabaseKey)
+
+let embeddingModel: any = null
+async function getEmbeddingModel() {
+  if (!embeddingModel) {
+    embeddingModel = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2')
+  }
+  return embeddingModel
+}
 
 const chunkText = (text: string, size = 1500) => {
   const chunks: string[] = []
@@ -79,10 +81,9 @@ const main = async () => {
   for (const item of contentItems) {
     const chunks = chunkText(item.content)
     for (const chunk of chunks) {
-      const { embedding } = await embed({
-        model: openai.embedding('text-embedding-3-small'),
-        value: chunk,
-      })
+      const model = await getEmbeddingModel()
+      const output = await model(chunk, { pooling: 'mean', normalize: true })
+      const embedding = Array.from(output.data as Float32Array)
 
       await supabase.from('portfolio_embeddings').insert({
         content: chunk,
