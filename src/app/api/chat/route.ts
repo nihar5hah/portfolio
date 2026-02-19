@@ -11,7 +11,6 @@ const KILO_API_URL = 'https://api.kilo.ai/api/gateway'
 const kilo = createOpenAI({
   baseURL: KILO_API_URL,
   apiKey: KILO_API_KEY,
-  compatibility: 'strict',
 })
 
 if (!supabaseUrl || !supabaseKey) {
