@@ -96,5 +96,29 @@ Be concise, friendly, and helpful. Use the provided context to answer accurately
     },
   })
 
-  return result.toTextStreamResponse()
+  const encoder = new TextEncoder()
+  const reader = result.textStream.getReader()
+
+  const stream = new ReadableStream({
+    async pull(controller) {
+      const { value, done } = await reader.read()
+      if (done) {
+        controller.enqueue(encoder.encode('data: [DONE]\n\n'))
+        controller.close()
+        return
+      }
+      controller.enqueue(encoder.encode(`data: ${value}\n\n`))
+    },
+    cancel() {
+      reader.cancel()
+    },
+  })
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+    },
+  })
 }
