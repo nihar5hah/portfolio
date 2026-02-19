@@ -107,7 +107,10 @@ Be concise, friendly, and helpful. Use the provided context to answer accurately
         controller.close()
         return
       }
-      controller.enqueue(encoder.encode(`data: ${value}\n\n`))
+      const payload = JSON.stringify({
+        choices: [{ delta: { content: value } }],
+      })
+      controller.enqueue(encoder.encode(`data: ${payload}\n\n`))
     },
     cancel() {
       reader.cancel()
