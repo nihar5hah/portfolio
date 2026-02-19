@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 import { cn } from '@/lib/utils'
 
 export function ChatWidget() {
@@ -51,7 +52,13 @@ export function ChatWidget() {
                       : 'glass-secondary text-foreground'
                   )}
                 >
-                  {m.content}
+                  {m.role === 'user' ? (
+                    m.content
+                  ) : (
+                    <ReactMarkdown className="prose prose-invert prose-p:my-0 prose-strong:font-semibold">
+                      {m.content}
+                    </ReactMarkdown>
+                  )}
                 </div>
               ))}
               {isLoading && (
@@ -76,7 +83,6 @@ export function ChatWidget() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ messages: [{ role: 'user', content: userMessage }] }),
                   })
-                  console.log('Response:', response)
                   if (!response.body) throw new Error('No response')
                   const reader = response.body.getReader()
                   const decoder = new TextDecoder()
@@ -87,7 +93,6 @@ export function ChatWidget() {
                     const { value, done } = await reader.read()
                     if (done) break
                     buffer += decoder.decode(value, { stream: true })
-                    console.log('Buffer:', buffer)
 
                     const lines = buffer.split('\n')
                     buffer = lines.pop() || ''
