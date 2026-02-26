@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { resume } from '@/data/resume'
+import { profileContext } from '@/data/profile-context'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || ''
 const client = new GoogleGenerativeAI(GEMINI_API_KEY)
@@ -19,45 +19,6 @@ function rateLimit(key: string) {
   if (entry.count >= LIMIT) return false
   entry.count += 1
   return true
-}
-
-function buildResumeContext(): string {
-  const exp = resume.experience
-    .map(
-      (e) =>
-        `${e.company} - ${e.role} (${e.period})\n${e.achievements?.join('\n') || e.description}`
-    )
-    .join('\n\n')
-
-  const proj = resume.projects
-    .map((p) => `${p.title}\n${p.longDescription || p.description}`)
-    .join('\n\n')
-
-  const skills = resume.skills
-    .map((cat) => `${cat.title}: ${cat.skills.map((s) => s.name).join(', ')}`)
-    .join('\n')
-
-  return `
-# About Nihar Shah
-
-## Education
-${resume.education.map((e) => `${e.degree} from ${e.school} (${e.period})`).join('\n')}
-
-## Experience
-${exp}
-
-## Projects
-${proj}
-
-## Skills
-${skills}
-
-## Certifications
-${resume.certifications.join('\n')}
-
----
-You are Nihar's AI assistant. Answer questions about his background, experience, projects, and skills based on the information above. Be helpful, concise, and accurate. Only answer questions related to Nihar's professional profile.
-`.trim()
 }
 
 function toSseStream(text: string) {
@@ -92,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     const response = await model.generateContent([
       {
-        text: buildResumeContext(),
+        text: profileContext,
       },
       {
         text: userMessage,
