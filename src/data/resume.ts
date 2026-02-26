@@ -1,14 +1,15 @@
 import { experiences } from './experience'
 import { projects } from './projects'
 import { skillCategories } from './skills'
+import { siteConfig } from './social'
 
 export const resume = {
   education: [
     {
-      school: 'Vellore Institute of Technology',
-      degree: 'B.Tech Computer Science',
-      period: '2023 — 2027',
-      location: 'Vellore, India',
+      school: siteConfig.university,
+      degree: siteConfig.degree,
+      period: `2023 — ${siteConfig.graduationYear}`,
+      location: siteConfig.location,
     },
   ],
   experience: experiences,
