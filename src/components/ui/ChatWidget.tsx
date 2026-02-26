@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
@@ -11,9 +11,62 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showNotification, setShowNotification] = useState(false)
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem('begu_notification_dismissed')
+    if (!dismissed) {
+      const timer = setTimeout(() => setShowNotification(true), 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [])
+
+  const dismissNotification = () => {
+    setShowNotification(false)
+    localStorage.setItem('begu_notification_dismissed', '1')
+  }
+
+  const handleOpen = () => {
+    setOpen(true)
+    dismissNotification()
+  }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+      {/* Welcome notification bubble */}
+      <AnimatePresence>
+        {showNotification && !open && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.85, y: 8 }}
+            transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+            className="relative mb-3 glass-secondary glass-edge px-4 py-3 max-w-[210px] cursor-pointer select-none"
+            onClick={handleOpen}
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); dismissNotification() }}
+              className="absolute top-1.5 right-2 text-foreground-secondary hover:text-foreground text-sm opacity-50 hover:opacity-100 transition-opacity leading-none"
+              aria-label="Dismiss"
+            >
+              ×
+            </button>
+            <p className="text-xs font-medium text-foreground mb-0.5 pr-3">Hey, I&apos;m Begu 👋</p>
+            <p className="text-xs text-foreground-secondary">Ask me anything about Nihar!</p>
+            {/* Speech bubble tail */}
+            <div
+              className="absolute -bottom-[5px] right-[22px] w-0 h-0 pointer-events-none"
+              style={{
+                borderLeft: '5px solid transparent',
+                borderRight: '5px solid transparent',
+                borderTop: '5px solid rgba(23, 23, 23, 0.85)',
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Chat panel */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -152,10 +205,11 @@ export function ChatWidget() {
         )}
       </AnimatePresence>
 
+      {/* Chat toggle button — always anchored bottom-right */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.98 }}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => open ? setOpen(false) : handleOpen()}
         className="glass-secondary glass-edge w-12 h-12 rounded-full flex items-center justify-center"
       >
         <MessageCircle className="w-5 h-5 text-accent" />

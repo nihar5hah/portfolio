@@ -1,20 +1,11 @@
 'use client'
 
 import { useRef, useState, useCallback, useEffect } from 'react'
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
+import { ArrowRight } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
-import { easings, gridRevealItem } from '@/components/motion/animations'
+import { easings } from '@/components/motion/animations'
 import { cn } from '@/lib/utils'
-
-/**
- * Hero Section with Instrument Serif
- *
- * - Large, refined Instrument Serif headline
- * - Interactive cursor-following background
- * - Elegant CTA and social proof
- * - Scroll-triggered animations
- */
 
 // Check if device supports hover
 const useIsHoverDevice = () => {
@@ -25,9 +16,20 @@ const useIsHoverDevice = () => {
   return isHover
 }
 
+const NIHAR = 'Nihar'
+const SHAH = 'Shah'
+const TOTAL_CHARS = NIHAR.length + 1 + SHAH.length // 10 (space counts as a beat)
+
+const FONTS = [
+  { family: 'var(--font-serif)', label: 'Serif' },
+  { family: 'var(--font-display)', label: 'Mono' },
+  { family: "Georgia, 'Times New Roman', serif", label: 'Classic' },
+  { family: "'Courier New', Courier, monospace", label: 'Typewriter' },
+  { family: "Impact, 'Arial Black', sans-serif", label: 'Impact' },
+]
+
 export function HeroNew() {
   const heroRef = useRef<HTMLDivElement>(null)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const isHoverDevice = useIsHoverDevice()
 
   // Cursor-following orb animation
@@ -45,18 +47,11 @@ export function HeroNew() {
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!heroRef.current || !isHoverDevice) return
     const rect = heroRef.current.getBoundingClientRect()
-    // Center blob on cursor (blob is 384px = w-96, so offset by half)
     const x = e.clientX - rect.left - 192
     const y = e.clientY - rect.top - 192
-
-    setMousePosition({ x, y })
-
-    // Primary orb - large one (centered on cursor)
     orb1X.set(x)
     orb1Y.set(y)
-
-    // Secondary orb - offset for layered effect with parallax
-    orb2X.set(x * 0.6) // Slower parallax movement
+    orb2X.set(x * 0.6)
     orb2Y.set(y * 0.6)
   }, [orb1X, orb1Y, orb2X, orb2Y, isHoverDevice])
 
@@ -66,6 +61,49 @@ export function HeroNew() {
     orb2X.set(0)
     orb2Y.set(0)
   }, [orb1X, orb1Y, orb2X, orb2Y])
+
+  // Typewriter state
+  const [typedChars, setTypedChars] = useState(0)
+  const [isCycling, setIsCycling] = useState(false)
+  const [fontIdx, setFontIdx] = useState(0)
+  const [isNameVisible, setIsNameVisible] = useState(true)
+
+  const isTypingDone = typedChars >= TOTAL_CHARS
+  const niharText = NIHAR.slice(0, Math.min(typedChars, NIHAR.length))
+  // Skip index 5 (space beat), Shah starts at index 6
+  const shahText = typedChars > NIHAR.length ? SHAH.slice(0, Math.max(0, typedChars - NIHAR.length - 1)) : ''
+
+  // Typing effect
+  useEffect(() => {
+    if (typedChars >= TOTAL_CHARS) return
+    const isSpaceBeat = typedChars === NIHAR.length
+    const delay = typedChars === 0 ? 1000 : isSpaceBeat ? 180 : 75
+    const t = setTimeout(() => setTypedChars(c => c + 1), delay)
+    return () => clearTimeout(t)
+  }, [typedChars])
+
+  // Start font cycling after typing is done
+  useEffect(() => {
+    if (!isTypingDone) return
+    const t = setTimeout(() => setIsCycling(true), 2800)
+    return () => clearTimeout(t)
+  }, [isTypingDone])
+
+  // Font cycling loop
+  useEffect(() => {
+    if (!isCycling) return
+    const interval = setInterval(() => {
+      setIsNameVisible(false)
+      setTimeout(() => {
+        setFontIdx(i => (i + 1) % FONTS.length)
+        setIsNameVisible(true)
+      }, 380)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [isCycling])
+
+  const currentFont = FONTS[fontIdx].family
+  const showCursor = !isTypingDone
 
   return (
     <section
@@ -129,22 +167,80 @@ export function HeroNew() {
             </span>
           </motion.div>
 
-          {/* Main headline with Instrument Serif */}
+          {/* Main headline with typewriter + font cycling */}
           <motion.div
             className="mb-8"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: easings.mechanical }}
           >
-            <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl font-medium leading-tight text-foreground">
-              Nihar
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-medium leading-tight text-foreground">
+              {/* Nihar — with font cycling + typewriter */}
+              <motion.span
+                style={{
+                  fontFamily: currentFont,
+                  willChange: 'opacity, filter',
+                }}
+                animate={{
+                  opacity: isNameVisible ? 1 : 0,
+                  filter: isNameVisible ? 'blur(0px)' : 'blur(10px)',
+                }}
+                transition={{ duration: 0.38, ease: 'easeInOut' }}
+              >
+                {niharText}
+                {showCursor && typedChars <= NIHAR.length && (
+                  <motion.span
+                    className="text-accent"
+                    animate={{ opacity: [1, 0, 1] }}
+                    transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }}
+                  >_</motion.span>
+                )}
+              </motion.span>
               <br />
-              <span className="text-accent">Shah</span>
+              {/* Shah — accent colored, same font cycling */}
+              <motion.span
+                className="text-accent"
+                style={{
+                  fontFamily: currentFont,
+                  willChange: 'opacity, filter',
+                }}
+                animate={{
+                  opacity: isNameVisible ? 1 : 0,
+                  filter: isNameVisible ? 'blur(0px)' : 'blur(10px)',
+                }}
+                transition={{ duration: 0.38, ease: 'easeInOut' }}
+              >
+                {shahText}
+                {showCursor && typedChars > NIHAR.length && (
+                  <motion.span
+                    animate={{ opacity: [1, 0, 1] }}
+                    transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }}
+                  >_</motion.span>
+                )}
+              </motion.span>
               <br />
-              <span className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground-secondary">
+              <span className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground-secondary font-serif">
                 AI Engineer · CS Undergrad
               </span>
             </h1>
+
+            {/* Font label pill — subtle indicator during cycling */}
+            <AnimatePresence mode="wait">
+              {isCycling && (
+                <motion.div
+                  key={fontIdx}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-3 inline-flex items-center gap-1.5"
+                >
+                  <span className="text-[10px] text-foreground-muted uppercase tracking-widest">
+                    {FONTS[fontIdx].label}
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
 
           {/* Subheading */}
@@ -178,7 +274,6 @@ export function HeroNew() {
               whileHover={{ x: 4, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              {/* Shimmer effect on hover */}
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                 initial={{ x: '-100%' }}
@@ -202,7 +297,6 @@ export function HeroNew() {
               whileHover={{ x: -4, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              {/* Border glow effect */}
               <motion.div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 style={{
