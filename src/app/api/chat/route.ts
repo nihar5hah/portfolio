@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
       },
     ])
 
-    const text = response.content.parts[0]?.text || 'No response'
+    const text = response.candidates?.[0]?.content?.parts[0]?.text || 'No response'
     return new Response(toSseStream(text), {
       headers: {
         'Content-Type': 'text/event-stream',
