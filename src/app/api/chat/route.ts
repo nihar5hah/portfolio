@@ -99,8 +99,14 @@ export async function POST(req: NextRequest) {
       },
     ])
 
+    // Extract text from response
+    const respObj = response as any
     const text =
-      response.response?.text?.() || response.response?.text || 'No response'
+      respObj.response?.text?.() ||
+      respObj.response?.text ||
+      respObj.text?.() ||
+      respObj.text ||
+      'No response'
     return new Response(toSseStream(text), {
       headers: {
         'Content-Type': 'text/event-stream',
