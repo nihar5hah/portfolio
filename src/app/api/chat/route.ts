@@ -55,11 +55,12 @@ async function queryOpenClaw(userMessage: string): Promise<string> {
     const ws = new WebSocket(wsUrl)
     const runId = crypto.randomUUID()
     const pending = new Map<string, { resolve: (v: unknown) => void; reject: (e: Error) => void }>()
-    let chatSendAcked = false
+    let state: 'connecting' | 'connected' | 'sent' | 'done' = 'connecting'
+    let lastError: Error | null = null
 
     const timeout = setTimeout(() => {
+      lastError = new Error('timeout waiting for agent response')
       ws.close()
-      reject(new Error('timeout waiting for agent response'))
     }, 60_000)
 
     function cleanup() {
@@ -72,86 +73,107 @@ async function queryOpenClaw(userMessage: string): Promise<string> {
       const msg = JSON.stringify({ type: 'req', id, method, params })
       return new Promise((res, rej) => {
         pending.set(id, { resolve: res, reject: rej })
-        ws.send(msg)
+        try {
+          ws.send(msg)
+        } catch (e) {
+          pending.delete(id)
+          rej(e instanceof Error ? e : new Error(String(e)))
+        }
       })
     }
 
     ws.onmessage = (event: MessageEvent) => {
-      let msg: Record<string, unknown>
-      try { msg = JSON.parse(String(event.data)) } catch { return }
+      try {
+        let msg: Record<string, unknown>
+        try { msg = JSON.parse(String(event.data)) } catch { return }
 
-      if (msg.type === 'res') {
-        const id = msg.id as string
-        const handler = pending.get(id)
-        if (handler) {
-          pending.delete(id)
-          if (msg.ok) handler.resolve(msg.payload)
-          else handler.reject(new Error((msg.error as Record<string, string>)?.message ?? 'rpc error'))
-        }
-        return
-      }
-
-      if (msg.type === 'event') {
-        const evt = msg.event as string
-        const payload = msg.payload as Record<string, unknown>
-
-        if (evt === 'connect.challenge') {
-          sendReq('connect', {
-            minProtocol: 3,
-            maxProtocol: 3,
-            client: { id: 'portfolio-chatbot', version: '1.0.0', platform: 'server', mode: 'webchat' },
-            role: 'operator',
-            scopes: ['operator.admin', 'operator.approvals', 'operator.pairing'],
-            caps: [],
-            auth: { token: GATEWAY_TOKEN },
-            userAgent: 'portfolio-chatbot/1.0',
-            locale: 'en',
-          }).then(() => {
-            return sendReq('chat.send', {
-              sessionKey: SESSION_KEY,
-              message: userMessage,
-              deliver: false,
-              idempotencyKey: runId,
-            })
-          }).then(() => {
-            chatSendAcked = true
-          }).catch((err: Error) => {
-            cleanup()
-            reject(err)
-          })
+        if (msg.type === 'res') {
+          const id = msg.id as string
+          const handler = pending.get(id)
+          if (handler) {
+            pending.delete(id)
+            if (msg.ok) handler.resolve(msg.payload)
+            else handler.reject(new Error((msg.error as Record<string, unknown>)?.message as string ?? 'rpc error'))
+          }
           return
         }
 
-        if (evt === 'chat' && chatSendAcked) {
-          if (payload?.runId !== runId) return
-          const state = payload.state as string
+        if (msg.type === 'event') {
+          const evt = msg.event as string
+          const payload = msg.payload as Record<string, unknown>
 
-          if (state === 'final') {
-            const text = extractText(payload.message)
-            cleanup()
-            resolve(text || 'No response')
-          } else if (state === 'error') {
-            cleanup()
-            reject(new Error((payload.errorMessage as string) ?? 'chat error'))
-          } else if (state === 'aborted') {
-            cleanup()
-            reject(new Error('chat aborted'))
+          if (evt === 'connect.challenge' && state === 'connecting') {
+            state = 'connected'
+            sendReq('connect', {
+              minProtocol: 3,
+              maxProtocol: 3,
+              client: { id: 'portfolio-chatbot', version: '1.0.0', platform: 'server', mode: 'webchat' },
+              role: 'operator',
+              scopes: ['operator.admin', 'operator.approvals', 'operator.pairing'],
+              caps: [],
+              auth: { token: GATEWAY_TOKEN },
+              userAgent: 'portfolio-chatbot/1.0',
+              locale: 'en',
+            }).then(() => {
+              return sendReq('chat.send', {
+                sessionKey: SESSION_KEY,
+                message: userMessage,
+                deliver: false,
+                idempotencyKey: runId,
+              })
+            }).then(() => {
+              state = 'sent'
+            }).catch((err: Error) => {
+              lastError = err
+              cleanup()
+            })
+            return
+          }
+
+          if (evt === 'chat' && state === 'sent') {
+            const msgState = payload.state as string
+
+            if (msgState === 'final') {
+              const text = extractText(payload.message)
+              state = 'done'
+              cleanup()
+              resolve(text || 'No response')
+            } else if (msgState === 'error') {
+              state = 'done'
+              lastError = new Error((payload.errorMessage as string) ?? 'chat error')
+              cleanup()
+            } else if (msgState === 'aborted') {
+              state = 'done'
+              lastError = new Error('chat aborted')
+              cleanup()
+            }
           }
         }
+      } catch (e) {
+        lastError = e instanceof Error ? e : new Error(String(e))
+        cleanup()
       }
     }
 
     ws.onerror = () => {
+      if (!lastError) lastError = new Error('websocket error')
       cleanup()
-      reject(new Error('websocket error'))
     }
 
     ws.onclose = () => {
-      if (pending.size > 0) {
+      if (state !== 'done') {
+        if (!lastError) lastError = new Error('websocket closed unexpectedly')
         cleanup()
-        reject(new Error('websocket closed unexpectedly'))
       }
     }
+
+    // Wait for the connection to either succeed or fail
+    const checkCompletion = setInterval(() => {
+      if (state === 'done' || lastError) {
+        clearInterval(checkCompletion)
+        if (lastError) reject(lastError)
+      }
+    }, 100)
   })
 }
 
