@@ -195,7 +195,9 @@ export async function POST(req: NextRequest) {
         Connection: 'keep-alive',
       },
     })
-  } catch {
-    return new Response('Agent error', { status: 502 })
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err)
+    console.error('[chat API] error:', errorMsg)
+    return new Response(`Agent error: ${errorMsg}`, { status: 502 })
   }
 }
