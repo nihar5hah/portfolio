@@ -7,7 +7,6 @@ import { Container } from '@/components/layout/Container'
 import { easings } from '@/components/motion/animations'
 import { cn } from '@/lib/utils'
 
-// Check if device supports hover
 const useIsHoverDevice = () => {
   const [isHover, setIsHover] = useState(true)
   useEffect(() => {
@@ -18,7 +17,7 @@ const useIsHoverDevice = () => {
 
 const NIHAR = 'Nihar'
 const SHAH = 'Shah'
-const TOTAL_CHARS = NIHAR.length + 1 + SHAH.length // 10 (space counts as a beat)
+const TOTAL_CHARS = NIHAR.length + 1 + SHAH.length // 10 (space is a timing beat)
 
 const FONTS = [
   { family: 'var(--font-serif)', label: 'Serif' },
@@ -37,7 +36,6 @@ export function HeroNew() {
   const orb1Y = useMotionValue(0)
   const orb2X = useMotionValue(0)
   const orb2Y = useMotionValue(0)
-
   const springConfig = { stiffness: 100, damping: 30 }
   const springOrb1X = useSpring(orb1X, springConfig)
   const springOrb1Y = useSpring(orb1Y, springConfig)
@@ -56,24 +54,24 @@ export function HeroNew() {
   }, [orb1X, orb1Y, orb2X, orb2Y, isHoverDevice])
 
   const handleMouseLeave = useCallback(() => {
-    orb1X.set(0)
-    orb1Y.set(0)
-    orb2X.set(0)
-    orb2Y.set(0)
+    orb1X.set(0); orb1Y.set(0); orb2X.set(0); orb2Y.set(0)
   }, [orb1X, orb1Y, orb2X, orb2Y])
 
-  // Typewriter state
+  // ── Typewriter + font cycling state ──────────────────────────────────────
   const [typedChars, setTypedChars] = useState(0)
   const [isCycling, setIsCycling] = useState(false)
   const [fontIdx, setFontIdx] = useState(0)
-  const [isNameVisible, setIsNameVisible] = useState(true)
+  // hasFlipped becomes true the moment the FIRST real font change fires.
+  // Until then, no 3D entrance/exit animation plays (typing appears naturally).
+  const [hasFlipped, setHasFlipped] = useState(false)
 
   const isTypingDone = typedChars >= TOTAL_CHARS
-  const niharText = NIHAR.slice(0, Math.min(typedChars, NIHAR.length))
-  // Skip index 5 (space beat), Shah starts at index 6
-  const shahText = typedChars > NIHAR.length ? SHAH.slice(0, Math.max(0, typedChars - NIHAR.length - 1)) : ''
+  // Which text to display: full name once cycling, progressive during typing
+  const niharDisplay = hasFlipped ? NIHAR : NIHAR.slice(0, Math.min(typedChars, NIHAR.length))
+  const shahDisplay  = hasFlipped ? SHAH  : (typedChars > NIHAR.length ? SHAH.slice(0, Math.max(0, typedChars - NIHAR.length - 1)) : '')
+  const showCursor = !isTypingDone
 
-  // Typing effect
+  // Typewriter: one char every 75ms (with a 180ms pause at the space beat)
   useEffect(() => {
     if (typedChars >= TOTAL_CHARS) return
     const isSpaceBeat = typedChars === NIHAR.length
@@ -82,28 +80,26 @@ export function HeroNew() {
     return () => clearTimeout(t)
   }, [typedChars])
 
-  // Start font cycling after typing is done
+  // Arm cycling 2.8 s after typing finishes
   useEffect(() => {
     if (!isTypingDone) return
     const t = setTimeout(() => setIsCycling(true), 2800)
     return () => clearTimeout(t)
   }, [isTypingDone])
 
-  // Font cycling loop
+  // Font cycling: every 3 s, advance fontIdx and mark the first flip
   useEffect(() => {
     if (!isCycling) return
     const interval = setInterval(() => {
-      setIsNameVisible(false)
-      setTimeout(() => {
-        setFontIdx(i => (i + 1) % FONTS.length)
-        setIsNameVisible(true)
-      }, 380)
+      setFontIdx(i => (i + 1) % FONTS.length)
+      setHasFlipped(true)
     }, 3000)
     return () => clearInterval(interval)
   }, [isCycling])
 
+  // AnimatePresence key: stable 'typing' until the first real font change fires
+  const nameKey = hasFlipped ? `font-${fontIdx}` : 'typing'
   const currentFont = FONTS[fontIdx].family
-  const showCursor = !isTypingDone
 
   return (
     <section
@@ -115,31 +111,18 @@ export function HeroNew() {
     >
       {/* Grid background */}
       <div className="absolute inset-0 grid-brutalist opacity-20 hidden md:block" />
-
-      {/* Scanline effect - desktop only */}
       {isHoverDevice && <div className="scanline-effect absolute inset-0 hidden md:block" />}
 
-      {/* Interactive cursor-following orbs */}
+      {/* Cursor-following orbs */}
       <motion.div
         className="absolute w-96 h-96 rounded-full bg-gradient-to-r from-accent/25 to-accent/5 blur-3xl pointer-events-none"
-        style={{
-          x: springOrb1X,
-          y: springOrb1Y,
-          left: '-192px',
-          top: '-192px',
-        }}
+        style={{ x: springOrb1X, y: springOrb1Y, left: '-192px', top: '-192px' }}
       />
       <motion.div
         className="absolute w-72 h-72 rounded-full bg-gradient-to-b from-accent/15 to-transparent blur-3xl pointer-events-none"
-        style={{
-          x: springOrb2X,
-          y: springOrb2Y,
-          right: '-144px',
-          bottom: '-144px',
-        }}
+        style={{ x: springOrb2X, y: springOrb2Y, right: '-144px', bottom: '-144px' }}
       />
 
-      {/* Content */}
       <Container className="relative z-10 py-32 md:py-40">
         <motion.div
           className="max-w-5xl"
@@ -156,10 +139,7 @@ export function HeroNew() {
           >
             <motion.div
               className="w-2 h-2 rounded-full bg-accent"
-              animate={{
-                opacity: [1, 0.5, 1],
-                scale: [1, 1.2, 1],
-              }}
+              animate={{ opacity: [1, 0.5, 1], scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
             <span className="text-foreground-secondary">
@@ -167,7 +147,7 @@ export function HeroNew() {
             </span>
           </motion.div>
 
-          {/* Main headline with typewriter + font cycling */}
+          {/* ── Headline ──────────────────────────────────────────────────── */}
           <motion.div
             className="mb-8"
             initial={{ opacity: 0, y: 40 }}
@@ -175,56 +155,110 @@ export function HeroNew() {
             transition={{ duration: 0.8, delay: 0.3, ease: easings.mechanical }}
           >
             <h1 className="text-6xl md:text-7xl lg:text-8xl font-medium leading-tight text-foreground">
-              {/* Nihar — with font cycling + typewriter */}
-              <motion.span
-                style={{
-                  fontFamily: currentFont,
-                  willChange: 'opacity, filter',
-                }}
-                animate={{
-                  opacity: isNameVisible ? 1 : 0,
-                  filter: isNameVisible ? 'blur(0px)' : 'blur(10px)',
-                }}
-                transition={{ duration: 0.38, ease: 'easeInOut' }}
-              >
-                {niharText}
-                {showCursor && typedChars <= NIHAR.length && (
+
+              {/*
+               * Perspective wrapper — gives the 3D context for the rotateX flip.
+               * display:block keeps it in flow (valid: span can be display:block via CSS).
+               */}
+              <span style={{ perspective: '1000px', display: 'block' }}>
+                <AnimatePresence mode="wait">
                   <motion.span
-                    className="text-accent"
-                    animate={{ opacity: [1, 0, 1] }}
-                    transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }}
-                  >_</motion.span>
-                )}
-              </motion.span>
-              <br />
-              {/* Shah — accent colored, same font cycling */}
-              <motion.span
-                className="text-accent"
-                style={{
-                  fontFamily: currentFont,
-                  willChange: 'opacity, filter',
-                }}
-                animate={{
-                  opacity: isNameVisible ? 1 : 0,
-                  filter: isNameVisible ? 'blur(0px)' : 'blur(10px)',
-                }}
-                transition={{ duration: 0.38, ease: 'easeInOut' }}
-              >
-                {shahText}
-                {showCursor && typedChars > NIHAR.length && (
-                  <motion.span
-                    animate={{ opacity: [1, 0, 1] }}
-                    transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }}
-                  >_</motion.span>
-                )}
-              </motion.span>
-              <br />
+                    key={nameKey}
+                    style={{ display: 'block', transformStyle: 'preserve-3d' }}
+
+                    /*
+                     * Cuboid flip:
+                     *   enter — rotateX(90deg → 0): front face rises from below
+                     *   exit  — rotateX(0 → -90deg): front face rolls away upward
+                     *
+                     * initial=false during the pure typing phase (hasFlipped=false)
+                     * so the name appears naturally as characters are typed.
+                     */
+                    initial={hasFlipped ? { rotateX: 90, opacity: 0 } : false}
+                    animate={{ rotateX: 0, opacity: 1 }}
+                    exit={
+                      hasFlipped
+                        ? { rotateX: -90, opacity: 0 }
+                        : { opacity: 0, transition: { duration: 0.15 } }
+                    }
+                    transition={{
+                      rotateX: { duration: 0.55, ease: [0.2, 0.6, 0.4, 1] },
+                      opacity:  { duration: 0.3 },
+                    }}
+                  >
+                    {/* ── "Nihar" — left-aligned, per-char TextReveal stagger ── */}
+                    <span style={{ display: 'block' }}>
+                      {niharDisplay.split('').map((char, i) => (
+                        <motion.span
+                          /*
+                           * Stable key: during typing, 'nihar-typing-0' etc. so only the
+                           * newly mounted char animates. During cycling, 'nihar-N-0' etc.
+                           * so all chars re-mount and stagger on each font change.
+                           */
+                          key={`nihar-${hasFlipped ? fontIdx : 'typing'}-${i}`}
+                          style={{ display: 'inline-block', fontFamily: currentFont }}
+                          initial={{ y: 22, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{
+                            // During typing: instant (no stagger), just reveal as typed
+                            // During cycling: staggered reveal synced with the flip
+                            delay:    hasFlipped ? i * 0.045 : 0,
+                            duration: hasFlipped ? 0.38 : 0.22,
+                            ease: [0.4, 0, 0.2, 1],
+                          }}
+                        >
+                          {char}
+                        </motion.span>
+                      ))}
+                      {/* blinking cursor on nihar line */}
+                      {showCursor && typedChars <= NIHAR.length && (
+                        <motion.span
+                          className="text-accent"
+                          animate={{ opacity: [1, 0, 1] }}
+                          transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }}
+                          style={{ display: 'inline-block' }}
+                        >_</motion.span>
+                      )}
+                    </span>
+
+                    {/* ── "Shah" — accent color, left-aligned ── */}
+                    <span className="text-accent" style={{ display: 'block' }}>
+                      {shahDisplay.split('').map((char, i) => (
+                        <motion.span
+                          key={`shah-${hasFlipped ? fontIdx : 'typing'}-${i}`}
+                          style={{ display: 'inline-block', fontFamily: currentFont }}
+                          initial={{ y: 22, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{
+                            delay:    hasFlipped ? (NIHAR.length + 1 + i) * 0.045 : 0,
+                            duration: hasFlipped ? 0.38 : 0.22,
+                            ease: [0.4, 0, 0.2, 1],
+                          }}
+                        >
+                          {char}
+                        </motion.span>
+                      ))}
+                      {/* blinking cursor on shah line */}
+                      {showCursor && typedChars > NIHAR.length && (
+                        <motion.span
+                          className="text-accent"
+                          animate={{ opacity: [1, 0, 1] }}
+                          transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }}
+                          style={{ display: 'inline-block' }}
+                        >_</motion.span>
+                      )}
+                    </span>
+                  </motion.span>
+                </AnimatePresence>
+              </span>
+
+              {/* Sub-title — static */}
               <span className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground-secondary font-serif">
                 AI Engineer · CS Undergrad
               </span>
             </h1>
 
-            {/* Font label pill — subtle indicator during cycling */}
+            {/* Active font label — tiny, left-aligned, fades per cycle */}
             <AnimatePresence mode="wait">
               {isCycling && (
                 <motion.div
@@ -232,8 +266,8 @@ export function HeroNew() {
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-3 inline-flex items-center gap-1.5"
+                  transition={{ duration: 0.25 }}
+                  className="mt-3"
                 >
                   <span className="text-[10px] text-foreground-muted uppercase tracking-widest">
                     {FONTS[fontIdx].label}
@@ -262,14 +296,11 @@ export function HeroNew() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7, ease: easings.mechanical }}
           >
-            {/* Primary CTA */}
             <motion.a
               href="#projects"
               className={cn(
                 'relative px-8 py-4 bg-accent text-background font-medium overflow-hidden group',
-                'border border-accent rounded-none',
-                'flex items-center gap-2',
-                'transition-all duration-300'
+                'border border-accent rounded-none flex items-center gap-2 transition-all duration-300'
               )}
               whileHover={{ x: 4, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -284,24 +315,19 @@ export function HeroNew() {
               <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
             </motion.a>
 
-            {/* Secondary CTA */}
             <motion.a
               href="#about"
               className={cn(
-                'relative px-8 py-4 group overflow-hidden',
+                'relative px-8 py-4 group overflow-hidden rounded-none',
                 'border border-border hover:border-accent/50',
-                'text-foreground hover:text-accent',
-                'rounded-none',
-                'transition-all duration-300'
+                'text-foreground hover:text-accent transition-all duration-300'
               )}
               whileHover={{ x: -4, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               <motion.div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent)',
-                }}
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.1), transparent)' }}
               />
               <span className="relative z-10">Learn more</span>
             </motion.a>
