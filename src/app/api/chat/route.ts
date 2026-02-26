@@ -50,6 +50,7 @@ function extractText(message: unknown): string {
 
 async function queryOpenClaw(userMessage: string): Promise<string> {
   const wsUrl = GATEWAY_URL.replace(/^https?:\/\//, 'wss://')
+  console.log('[queryOpenClaw] connecting to', wsUrl)
 
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(wsUrl)
@@ -60,6 +61,7 @@ async function queryOpenClaw(userMessage: string): Promise<string> {
 
     const timeout = setTimeout(() => {
       lastError = new Error('timeout waiting for agent response')
+      console.log('[queryOpenClaw] timeout')
       ws.close()
     }, 60_000)
 
@@ -85,7 +87,11 @@ async function queryOpenClaw(userMessage: string): Promise<string> {
     ws.onmessage = (event: MessageEvent) => {
       try {
         let msg: Record<string, unknown>
-        try { msg = JSON.parse(String(event.data)) } catch { return }
+        try { msg = JSON.parse(String(event.data)) } catch {
+          console.log('[queryOpenClaw] failed to parse message:', event.data)
+          return
+        }
+        console.log('[queryOpenClaw] message:', msg.type, msg.event)
 
         if (msg.type === 'res') {
           const id = msg.id as string
@@ -155,12 +161,18 @@ async function queryOpenClaw(userMessage: string): Promise<string> {
       }
     }
 
-    ws.onerror = () => {
+    ws.onerror = (evt) => {
       if (!lastError) lastError = new Error('websocket error')
+      console.log('[queryOpenClaw] ws error:', lastError?.message)
       cleanup()
     }
 
+    ws.onopen = () => {
+      console.log('[queryOpenClaw] ws connected')
+    }
+
     ws.onclose = () => {
+      console.log('[queryOpenClaw] ws closed, state:', state, 'lastError:', lastError?.message)
       if (state !== 'done') {
         if (!lastError) lastError = new Error('websocket closed unexpectedly')
         cleanup()
