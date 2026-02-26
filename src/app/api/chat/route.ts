@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 
-const GATEWAY_URL = process.env.BEGU_GATEWAY_URL || 'http://100.105.130.84:18789'
-const SESSION_KEY = process.env.BEGU_SESSION_KEY || 'agent:begu-agent:main'
+const GATEWAY_URL = process.env.BEGU_GATEWAY_URL || 'https://millennium-tones-harmony-levels.trycloudflare.com'
+const SESSION_KEY = process.env.BEGU_SESSION_KEY || 'agent:begu:session'
 
 const limiter = new Map<string, { count: number; ts: number }>()
 const LIMIT = 10
