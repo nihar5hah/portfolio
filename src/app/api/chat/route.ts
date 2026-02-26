@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 
-const GATEWAY_URL = process.env.BEGU_GATEWAY_URL || 'https://millennium-tones-harmony-levels.trycloudflare.com'
-const SESSION_KEY = process.env.BEGU_SESSION_KEY || 'agent:begu:session'
+const GATEWAY_URL = process.env.BEGU_GATEWAY_URL || 'https://resolution-communities-markets-strongly.trycloudflare.com'
+const SESSION_KEY = process.env.BEGU_SESSION_KEY || 'agent:begu:main'
 const GATEWAY_TOKEN = process.env.BEGU_TOKEN || ''
 
 const limiter = new Map<string, { count: number; ts: number }>()
