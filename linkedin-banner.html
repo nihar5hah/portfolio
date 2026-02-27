@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nihar Shah - LinkedIn Banner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .banner-container {
+      width: 1500px;
+      height: 500px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Background */
+    .banner-bg {
+      position: absolute;
+      inset: 0;
+      background: #050505;
+      z-index: 1;
+    }
+
+    /* Grid pattern background */
+    .banner-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(0deg, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Grain texture overlay */
+    .banner-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.02) 0px,
+          rgba(255, 255, 255, 0.02) 1px,
+          transparent 1px,
+          transparent 2px
+        );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Content */
+    .banner-content {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 80px;
+      color: white;
+      justify-content: flex-end;
+    }
+
+    .content-wrapper {
+      max-width: 700px;
+      text-align: right;
+    }
+
+    /* Tag/Tagline */
+    .tagline {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+    }
+
+    .tagline-dot {
+      width: 5px;
+      height: 5px;
+      background: #6366f1;
+      border-radius: 50%;
+    }
+
+    /* Name */
+    .name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 96px;
+      font-weight: 400;
+      line-height: 1;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+
+    .name-first {
+      color: #ffffff;
+      display: block;
+    }
+
+    .name-last {
+      color: #6366f1;
+      display: block;
+    }
+
+    /* Subtitle */
+    .subtitle {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 24px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    .subtitle-accent {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Description */
+    .description {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.7;
+      margin-bottom: 0;
+      max-width: 500px;
+      margin-left: auto;
+    }
+
+    .description a {
+      color: #6366f1;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .description a:hover {
+      color: #7c7cff;
+    }
+
+    /* Download button for preview */
+    .download-section {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .download-btn {
+      background: #6366f1;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .download-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    body.with-controls {
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .banner-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body class="with-controls">
+  <div class="banner-wrapper">
+    <div class="banner-container" id="banner">
+      <div class="banner-bg"></div>
+
+      <!-- Main content -->
+      <div class="banner-content">
+        <div class="content-wrapper">
+          <!-- Tagline with dot -->
+          <div class="tagline">
+            <span>Building AI systems that work in the real world</span>
+            <div class="tagline-dot"></div>
+          </div>
+
+          <!-- Name -->
+          <div class="name">
+            <span class="name-first">Nihar</span>
+            <span class="name-last">Shah</span>
+          </div>
+
+          <!-- Subtitle -->
+          <div class="subtitle">
+            AI Engineer <span class="subtitle-accent">·</span> CS Undergrad.
+          </div>
+
+          <!-- Description -->
+          <p class="description">
+            Specialized in voice assistants, prompt engineering, and computer vision. Currently at <a href="#">Confido Health</a>, turning complex AI concepts into systems that solve real problems.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="download-section">
+    <p style="color: #666; margin-bottom: 15px;">Right-click → Save image to download</p>
+    <button class="download-btn" onclick="downloadBanner()">
+      📸 Screenshot Banner
+    </button>
+  </div>
+
+  <script>
+    async function downloadBanner() {
+      const banner = document.getElementById('banner');
+      const canvas = await html2canvas(banner);
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL();
+      link.download = 'nihar-shah-linkedin-banner.png';
+      link.click();
+    }
+
+    // Add html2canvas library
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    document.head.appendChild(script);
+  </script>
+</body>
+</html>

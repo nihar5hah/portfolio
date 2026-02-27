@@ -20,18 +20,17 @@ const NIHAR = 'Nihar'
 const SHAH = 'Shah'
 const TOTAL_CHARS = NIHAR.length + 1 + SHAH.length
 
-// Texts cycling through each font (Gujarati last)
-const NIHAR_TEXTS = ['Nihar', 'Nihar', 'Nihar', 'Nihar', 'Nihar', 'Nihar', 'નિહાર']
-const SHAH_TEXTS  = ['Shah',  'Shah',  'Shah',  'Shah',  'Shah',  'Shah',  'શાહ']
+// Texts cycling through each font (Hindi last)
+const NIHAR_TEXTS = ['Nihar', 'Nihar', 'Nihar', 'Nihar', 'Nihar', 'निहार']
+const SHAH_TEXTS  = ['Shah',  'Shah',  'Shah',  'Shah',  'Shah',  'शाह']
 
 const GOOEY_FONTS = [
-  'var(--font-souvenir)',     // ITC Souvenir Bold
-  'var(--font-myriad)',       // Myriad Pro Black Semi Condensed
-  'var(--font-cactus)',       // Cactus Jack
-  'var(--font-anzeigen)',     // Anzeigen Grotesk W01
-  'var(--font-portcullion)',  // Portcullion
+  'var(--font-jubilee)',        // OT Jubilee Platinum
+  'var(--font-weird-serif)',    // OT Weird Serif
+  'var(--font-souvenir-medium)', // Souvenir Medium
+  'var(--font-rhapsody)',       // OT Rhapsody Extrabold
   "-apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif", // Apple SF Pro
-  'var(--font-gujarati)',     // Noto Sans Gujarati
+  'var(--font-devanagari)',     // Noto Sans Devanagari (Hindi)
 ]
 
 export function HeroNew() {
