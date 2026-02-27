@@ -1,0 +1,44 @@
+/* Custom font-face declarations for locally hosted fonts */
+
+@font-face {
+  font-family: 'Souvenir';
+  src: url('/fonts/Souvenir-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Myriad Pro';
+  src: url('/fonts/Myriad Pro Black SemiCondensed.otf') format('opentype');
+  font-weight: 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cactus Jack';
+  src: url('/fonts/Cactus Jack Alternate.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Anzeigen Grotesk';
+  src: url('/fonts/Anzeigen Grotesk W01 Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Portcullion';
+  src: url('/fonts/Portcullion.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --font-souvenir: 'Souvenir', serif;
+  --font-myriad: 'Myriad Pro', sans-serif;
+  --font-cactus: 'Cactus Jack', sans-serif;
+  --font-anzeigen: 'Anzeigen Grotesk', sans-serif;
+  --font-portcullion: 'Portcullion', serif;
+}

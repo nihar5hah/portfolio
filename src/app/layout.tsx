@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
-import { IBM_Plex_Mono, Instrument_Serif } from 'next/font/google'
+import { IBM_Plex_Mono, Instrument_Serif, Noto_Sans_Gujarati } from 'next/font/google'
 import { ThemeProvider } from '@/hooks/useTheme'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import { GlobalInteractions } from '@/components/layout/GlobalInteractions'
@@ -23,6 +23,13 @@ const instrumentSerif = Instrument_Serif({
   variable: '--font-serif',
   display: 'swap',
   style: ['normal', 'italic'],
+})
+
+const notoSansGujarati = Noto_Sans_Gujarati({
+  weight: ['400', '700'],
+  subsets: ['gujarati'],
+  variable: '--font-gujarati',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -90,7 +97,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${ibmPlexMono.variable} ${instrumentSerif.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${ibmPlexMono.variable} ${instrumentSerif.variable} ${notoSansGujarati.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <ThemeProvider>
           <GlobalInteractions />
