@@ -39,7 +39,7 @@ const highlights = [
   },
   {
     icon: Sparkles,
-    title: 'Vibe Coding',
+    title: 'AI-Assisted Rapid Product Development',
     description: 'Rapid AI-assisted prototyping',
   },
 ]

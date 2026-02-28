@@ -10,7 +10,7 @@ export const skillCategories: SkillCategory[] = [
       { name: 'Prompt Engineering', icon: 'MessageSquare' },
       { name: 'Conversational AI', icon: 'MessagesSquare' },
       { name: 'Model Evaluation', icon: 'LineChart' },
-      { name: 'Vibe Coding', icon: 'Sparkles' },
+      { name: 'AI-Assisted Rapid Product Development', icon: 'Sparkles' },
     ],
   },
   {
@@ -66,17 +66,6 @@ export const skillCategories: SkillCategory[] = [
       { name: 'Retell AI', icon: 'Phone' },
       { name: 'Vocera', icon: 'Headphones' },
       { name: 'Figma', icon: 'Figma' },
-    ],
-  },
-  {
-    id: 'cybersecurity',
-    title: 'Cybersecurity',
-    icon: 'Shield',
-    skills: [
-      { name: 'Ethical Hacking', icon: 'Bug' },
-      { name: 'Penetration Testing', icon: 'ShieldAlert' },
-      { name: 'Vulnerability Assessment', icon: 'Search' },
-      { name: 'Networking', icon: 'Network' },
     ],
   },
 ]

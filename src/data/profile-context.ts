@@ -30,7 +30,7 @@ Core strengths:
 - Prompt Engineering & structured prompt systems
 - AI workflow automation and system design
 - Computer Vision applications
-- Rapid AI-assisted development (vibe coding)
+- AI-Assisted Rapid Product Development
 - System-level problem solving
 
 Philosophy: Prefers building real products and working systems rather than theoretical demos.
@@ -99,7 +99,7 @@ Features:
 Engineering focus:
 - Rapid end-to-end execution
 - Product thinking under time constraints
-- AI-assisted development (vibe coding)
+- AI-Assisted Rapid Product Development
 - Reduces fake or unqualified applications through transparent evaluation
 
 GitHub: https://github.com/nihar5hah/HireAI
@@ -173,7 +173,7 @@ GitHub: https://github.com/nihar5hah/FaceAttend
 - Prompt Validation & Deployment Workflows
 - AI Workflow Automation
 - Model Evaluation
-- Vibe Coding (AI-assisted rapid development)
+- AI-Assisted Rapid Product Development
 
 ### Programming & Scripting
 - Python
@@ -209,12 +209,6 @@ GitHub: https://github.com/nihar5hah/FaceAttend
 - Retell AI (voice AI platform)
 - Vocera (voice systems)
 - Figma (design)
-
-### Cybersecurity
-- Ethical hacking fundamentals
-- Penetration testing basics
-- Vulnerability assessment
-- Network security basics
 
 ### Soft Skills
 - Product thinking
