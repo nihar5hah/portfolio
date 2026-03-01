@@ -71,9 +71,9 @@ export function ExperienceTimeline() {
         <div className="relative max-w-4xl mx-auto">
           {/* Animated timeline line */}
           <motion.div
-            className="absolute left-0 md:left-1/2 w-0.5 h-full bg-gradient-to-b from-accent via-accent/50 to-transparent transform md:-translate-x-1/2"
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
+            className="absolute left-6 md:left-1/2 w-0.5 h-full bg-gradient-to-b from-accent via-accent/50 to-transparent"
+            initial={{ scaleY: 0, x: "-50%" }}
+            whileInView={{ scaleY: 1, x: "-50%" }}
             viewport={{ once: true }}
             transition={{ duration: 1.2, ease: easings.mechanical }}
             style={{ originY: 0 }}
@@ -98,9 +98,9 @@ export function ExperienceTimeline() {
                 >
                   {/* Timeline node */}
                   <motion.div
-                    className="absolute left-0 md:left-1/2 top-8 md:top-8 md:-translate-x-1/2 z-20 cursor-pointer"
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
+                    className="absolute left-6 md:left-1/2 top-8 md:top-8 z-20 cursor-pointer flex justify-center"
+                    initial={{ scale: 0, x: "-50%" }}
+                    whileInView={{ scale: 1, x: "-50%" }}
                     viewport={{ once: true }}
                     transition={{
                       delay: index * 0.1 + 0.3,
@@ -126,7 +126,7 @@ export function ExperienceTimeline() {
 
                   {/* Content wrapper */}
                   <div className={cn(
-                    'w-full md:w-1/2',
+                    'w-full md:w-1/2 py-4 md:py-0 pl-14 md:pl-0',
                     isEven ? 'md:pr-16 md:text-right' : 'md:pl-16 md:ml-auto'
                   )}>
                     {/* Experience card */}
