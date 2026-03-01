@@ -32,7 +32,7 @@ export const projects: Project[] = [
       'A structured 24/7 autonomous AI system built using OpenClaw with a Boss–Worker architecture. The system implements a multi-agent delegation model with specialized roles — a Coordinator agent manages task routing, a Coder agent handles code generation and review, a Researcher agent gathers information and context, and an Extractor agent processes and structures data from various sources. Autonomous workflows run on scheduled cron jobs, enabling continuous operation without manual intervention. The infrastructure includes self-healing gateway monitoring that detects failures and automatically recovers services, ensuring high availability. Security is enforced through prompt-injection resistance mechanisms and strict role-locking safeguards that prevent agents from operating outside their designated scope. The system is controlled via a Telegram-based command interface for real-time oversight and manual overrides when needed.',
     technologies: ['OpenClaw', 'Multi-Agent Systems', 'Cron Orchestration', 'Telegram API', 'Gateway Monitoring'],
     featured: true,
-    image: '',
+    image: '/projects/openclaw-dashboard.png',
     imagePlaceholder: 'OpenClaw System Diagram',
     highlights: [
       'Multi-agent delegation (Coordinator, Coder, Researcher, Extractor)',
