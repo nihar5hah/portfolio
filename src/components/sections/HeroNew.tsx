@@ -130,7 +130,7 @@ export function HeroNew() {
               transition={{ duration: 2, repeat: Infinity }}
             />
             <span className="text-foreground-secondary">
-              Building AI systems that work in the real world
+              Applied AI Systems &middot; Multi-Agent Architectures
             </span>
           </motion.div>
 
@@ -228,7 +228,7 @@ export function HeroNew() {
 
               {/* Sub-title — static */}
               <span className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground-secondary font-serif">
-                AI Engineer · CS Undergrad
+                Building Applied AI Systems &amp; Autonomous Agent Architectures
               </span>
             </h1>
           </motion.div>
@@ -240,9 +240,8 @@ export function HeroNew() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5, ease: easings.mechanical }}
           >
-            Specialized in voice assistants, prompt engineering, and computer vision.
-            Currently at <span className="text-accent font-medium">Confido Health</span>,
-            turning complex AI concepts into systems that solve real problems.
+            Computer Science undergraduate specializing in multi-agent orchestration,
+            AI evaluation systems, and production-ready conversational AI.
           </motion.p>
 
           {/* CTA buttons */}
@@ -267,12 +266,13 @@ export function HeroNew() {
                 whileHover={{ x: '100%' }}
                 transition={{ duration: 0.6, ease: 'easeInOut' }}
               />
-              <span className="relative z-10">View my work</span>
+              <span className="relative z-10">View Projects</span>
               <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
             </motion.a>
 
             <motion.a
-              href="#about"
+              href="/resume.pdf"
+              download
               className={cn(
                 'relative px-8 py-4 group overflow-hidden rounded-none',
                 'border border-border hover:border-accent/50',
@@ -285,7 +285,25 @@ export function HeroNew() {
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 style={{ background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.1), transparent)' }}
               />
-              <span className="relative z-10">Learn more</span>
+              <span className="relative z-10">Download Resume</span>
+            </motion.a>
+
+            <motion.a
+              href="#"
+              onClick={(e) => { e.preventDefault(); document.querySelector('.fixed.bottom-6.right-6 button')?.dispatchEvent(new MouseEvent('click', { bubbles: true })) }}
+              className={cn(
+                'relative px-8 py-4 group overflow-hidden rounded-none',
+                'border border-border hover:border-accent/50',
+                'text-foreground hover:text-accent transition-all duration-300'
+              )}
+              whileHover={{ x: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <motion.div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.1), transparent)' }}
+              />
+              <span className="relative z-10">Talk to Begu</span>
             </motion.a>
           </motion.div>
 

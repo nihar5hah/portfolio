@@ -5,61 +5,50 @@ import { Download, FileText, ExternalLink } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Button } from '@/components/ui/Button'
+import { ContainerScroll } from '@/components/ui/container-scroll-animation'
 
 export function Resume() {
   return (
-    <section id="resume" className="section-padding bg-gradient-to-b from-background-secondary/50 to-background">
-      <Container size="narrow">
-        <SectionHeading
-          title="Resume"
-          subtitle="View and download my full resume"
-          align="center"
-        />
+    <section id="resume" className="relative bg-gradient-to-b from-background-secondary/50 to-background overflow-hidden">
+      {/* Top fade */}
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
 
-        <motion.div
-          className="glass rounded-2xl p-6 md:p-8"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="aspect-[8.5/11] w-full bg-white rounded-lg overflow-hidden mb-6">
-            <iframe
-              src="/resume.pdf"
-              className="w-full h-full"
+      <ContainerScroll
+        titleComponent={
+          <div className="flex flex-col items-center gap-6">
+            <SectionHeading
               title="Resume"
+              subtitle="View and download my full resume"
+              align="center"
             />
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button href="/resume.pdf" size="lg" download>
+                <Download className="w-5 h-5" />
+                Download PDF
+              </Button>
+              <Button
+                href="/resume.pdf"
+                variant="secondary"
+                size="lg"
+              >
+                <ExternalLink className="w-5 h-5" />
+                Open in New Tab
+              </Button>
+            </div>
+            <div className="inline-flex items-center gap-2 text-foreground-muted text-sm mt-2">
+              <FileText className="w-4 h-4" />
+              <span>Last updated: March 2026</span>
+            </div>
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href="/resume.pdf" size="lg" download>
-              <Download className="w-5 h-5" />
-              Download PDF
-            </Button>
-            <Button
-              href="/resume.pdf"
-              variant="secondary"
-              size="lg"
-            >
-              <ExternalLink className="w-5 h-5" />
-              Open in New Tab
-            </Button>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="mt-8 text-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <div className="inline-flex items-center gap-2 text-foreground-muted text-sm">
-            <FileText className="w-4 h-4" />
-            <span>Last updated: February 2026</span>
-          </div>
-        </motion.div>
-      </Container>
+        }
+      >
+        <iframe
+          src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=0"
+          className="w-full h-full"
+          title="Resume"
+          style={{ background: 'white' }}
+        />
+      </ContainerScroll>
     </section>
   )
 }

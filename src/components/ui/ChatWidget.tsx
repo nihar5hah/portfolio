@@ -205,6 +205,13 @@ export function ChatWidget() {
         )}
       </AnimatePresence>
 
+      {/* Contextual helper text */}
+      {!open && (
+        <p className="text-[10px] text-foreground-muted text-right mb-1.5 max-w-[200px] leading-snug">
+          Ask Begu about my AI systems, projects, or architecture decisions.
+        </p>
+      )}
+
       {/* Chat toggle button — always anchored bottom-right */}
       <motion.button
         whileHover={{ scale: 1.05 }}

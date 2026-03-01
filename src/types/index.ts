@@ -19,6 +19,7 @@ export interface Project {
   featured: boolean
   highlights: string[]
   image?: string
+  imagePlaceholder?: string
   links: {
     github?: string
     demo?: string

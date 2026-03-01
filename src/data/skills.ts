@@ -3,45 +3,48 @@ import { SkillCategory } from '@/types'
 export const skillCategories: SkillCategory[] = [
   {
     id: 'ai-automation',
-    title: 'AI & Automation',
+    title: 'AI & Agent Systems',
     icon: 'Brain',
     skills: [
-      { name: 'AI Voice Assistants', icon: 'Mic' },
+      { name: 'Multi-Agent Orchestration', icon: 'Network' },
+      { name: 'RAG & Evaluation Systems', icon: 'LineChart' },
+      { name: 'Conversational AI & Voice', icon: 'Mic' },
       { name: 'Prompt Engineering', icon: 'MessageSquare' },
-      { name: 'Conversational AI', icon: 'MessagesSquare' },
-      { name: 'Model Evaluation', icon: 'LineChart' },
-      { name: 'AI-Assisted Rapid Product Development', icon: 'Sparkles' },
+      { name: 'AI Workflow Automation', icon: 'Workflow' },
+      { name: 'Autonomous Architectures', icon: 'Bot' },
     ],
   },
   {
     id: 'programming',
-    title: 'Programming & Scripting',
+    title: 'Languages',
     icon: 'Code',
     skills: [
       { name: 'Python', icon: 'FileCode' },
-      { name: 'C / C++', icon: 'Cpu' },
+      { name: 'TypeScript', icon: 'Braces' },
       { name: 'JavaScript', icon: 'Braces' },
+      { name: 'C / C++', icon: 'Cpu' },
       { name: 'Bash / Shell', icon: 'Terminal' },
     ],
   },
   {
     id: 'ai-ml-cv',
-    title: 'AI / ML / Computer Vision',
+    title: 'ML & Computer Vision',
     icon: 'Eye',
     skills: [
-      { name: 'Face Recognition', icon: 'ScanFace' },
       { name: 'OpenCV', icon: 'Scan' },
-      { name: 'Emotion Detection', icon: 'SmilePlus' },
-      { name: 'NLP Fundamentals', icon: 'Languages' },
+      { name: 'Deep Learning', icon: 'Layers' },
+      { name: 'Face Recognition', icon: 'ScanFace' },
+      { name: 'NLP', icon: 'Languages' },
     ],
   },
   {
     id: 'databases',
-    title: 'Databases & Backend',
+    title: 'Backend & Data',
     icon: 'Database',
     skills: [
       { name: 'Supabase', icon: 'Database' },
       { name: 'PostgreSQL', icon: 'Table' },
+      { name: 'Next.js', icon: 'Globe' },
       { name: 'REST APIs', icon: 'Plug' },
       { name: 'Webhooks', icon: 'Webhook' },
     ],
@@ -53,8 +56,8 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       { name: 'Linux', icon: 'Terminal' },
       { name: 'Docker', icon: 'Container' },
-      { name: 'Jetson Nano', icon: 'Microchip' },
       { name: 'SSH', icon: 'Key' },
+      { name: 'System Debugging', icon: 'Bug' },
     ],
   },
   {
@@ -63,9 +66,9 @@ export const skillCategories: SkillCategory[] = [
     icon: 'Wrench',
     skills: [
       { name: 'Git & GitHub', icon: 'GitBranch' },
+      { name: 'OpenClaw', icon: 'Bot' },
       { name: 'Retell AI', icon: 'Phone' },
       { name: 'Vocera', icon: 'Headphones' },
-      { name: 'Figma', icon: 'Figma' },
     ],
   },
 ]

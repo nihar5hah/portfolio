@@ -4,7 +4,7 @@ export const profileContext = `
 ## BASIC INFORMATION
 
 Name: Nihar Shah
-Role: Computer Science Undergraduate & AI Systems Builder
+Role: Computer Science Undergraduate & Applied AI Systems Builder
 Age: 21
 
 Education:
@@ -23,21 +23,24 @@ Links:
 
 ## PROFESSIONAL SUMMARY
 
-Nihar Shah is a Computer Science undergraduate focused on building practical AI systems that work in real-world environments.
+Nihar Shah is a Computer Science undergraduate specializing in building applied AI systems and autonomous agent architectures. He focuses on multi-agent orchestration, AI evaluation systems, and production-ready conversational AI.
 
 Core strengths:
-- Conversational AI systems and AI Voice Assistants
-- Prompt Engineering & structured prompt systems
-- AI workflow automation and system design
+- Multi-agent orchestration & autonomous systems
+- AI evaluation & RAG-powered platforms
+- Production conversational AI & voice assistants
+- Structured prompt design & engineering
+- AI workflow automation and system architecture
 - Computer Vision applications
-- AI-Assisted Rapid Product Development
-- System-level problem solving
+- Deployment-aware AI systems
 
-Philosophy: Prefers building real products and working systems rather than theoretical demos.
+Philosophy: Prioritizes production-oriented systems over experimental demos. Focuses on structured prompt design, evaluation-first architectures, and workflow reliability.
 
 ## INTERNSHIP EXPERIENCE
 
 ### Confido Health — AI / Product Intern (Current)
+
+Status: Currently active internship
 
 Focus:
 - Development and optimization of AI voice assistants for healthcare clinics
@@ -63,93 +66,81 @@ Experience:
 
 ## PROJECTS
 
-### KalExam — AI-Powered Examination & Assessment Platform (Ongoing)
+### KalExam — AI-Powered Learning & Evaluation Platform (Current)
 
 Status: Currently in development
 
 Description:
-KalExam is an AI-driven examination and evaluation platform designed to modernize and automate assessment workflows.
+An AI-driven learning system that generates personalized study strategies from syllabus, study materials, and past papers.
 
 Core capabilities:
-- AI-assisted question generation
-- Structured evaluation workflows
-- Intelligent scoring and feedback mechanisms
-- Skill-based candidate/student assessment
+- RAG-powered contextual learning with source-grounded responses
+- Multi-model AI routing to optimize speed and response quality
+- Source ingestion from PDFs, websites, and YouTube transcripts
+- Context-aware chat interface with citation tracking
+- Scalable async architecture with caching and progress tracking
 
-Engineering focus:
-- Scalable assessment architecture
-- Prompt-driven evaluation logic
-- System design for structured testing workflows
-- End-to-end product thinking
+### OpenClaw Multi-Agent Orchestration System (Current)
+
+Description:
+A structured 24/7 autonomous AI system built using OpenClaw with a Boss–Worker architecture.
+
+Core capabilities:
+- Multi-agent delegation (Coordinator, Coder, Researcher, Extractor)
+- Scheduled autonomous workflows via cron orchestration
+- Self-healing gateway monitoring & failure recovery
+- Prompt-injection resistance and role-locking safeguards
+- Telegram-based command control interface
+
+### Mission Control — Real-Time AI Operations Dashboard (Current)
+
+Description:
+A production-grade monitoring and observability dashboard for autonomous AI agents.
+
+Core capabilities:
+- Real-time agent activity feed
+- Uptime & health monitoring
+- Event-driven updates via Supabase Realtime
+- Global search across logs & workflows
+- Modular Next.js architecture
 
 ### HireAI — AI-Powered Job Assessment Platform
 
 Type: Hackathon Project (Built in 24 hours)
 
 Description:
-AI-driven platform designed to evaluate candidates strictly based on job requirements.
+AI-driven platform to evaluate candidates strictly based on job requirements.
 
 Features:
-- Job description analysis and understanding
-- Automatic assessment generation
-- Objective + subjective + coding questions
-- Skill-centric evaluation workflow
-- Candidate scoring and ranking
-
-Engineering focus:
-- Rapid end-to-end execution
-- Product thinking under time constraints
-- AI-Assisted Rapid Product Development
-- Reduces fake or unqualified applications through transparent evaluation
+- Automated job description analysis
+- Structured assessment generation (objective, subjective, coding)
+- Skill-based evaluation workflows
+- Built in 24-hour hackathon
 
 GitHub: https://github.com/nihar5hah/HireAI
 
-### Healthcare AI Voice Assistant & Prompt Generator
+### Healthcare AI Voice Assistant
 
 Context: Built during Confido Health internship
 
-Purpose:
-Generate location-specific AI voice assistant configurations for healthcare clinics.
+Description:
+Conversational AI systems built for automated clinic call handling across multiple healthcare locations.
 
 Features:
-- JSON-based prompt templates
-- Structured prompt blocks with configurable parameters
-- Metadata-driven configuration system
-- Clinic-specific parameter injection (hours, procedures, etc.)
-- Multi-location scalability
-
-Engineering:
-- Prompt generation workflows
-- Deployment-ready configurations
-- Standardized conversational design
-- Real-world healthcare use cases
-
-### Prompt Engineering Platform
-(Prompt Generation + Validation + Deployment)
-
-Not just a prompt generator—a complete prompt lifecycle management system.
-
-Core capabilities:
-- Prompt template generation
-- Prompt validation workflows
-- Prompt deployment pipelines
-- Real-time prompt feedback
-- Structured metadata support
-- Workflow-driven system design
-
-Deployment: https://promptgenkiro.vercel.app/
+- Dynamic prompt generation system
+- Location-specific AI voice configurations
+- Parameter injection (hours, procedures, routing)
+- Workflow optimization for task completion
 
 ### FaceAttend — AI Facial Recognition Attendance System
 
 Description:
-Computer vision-based attendance automation system with real-time multi-face detection.
+Automated attendance system using computer vision and facial recognition.
 
 Features:
-- Real-time multi-face detection and recognition
-- Facial recognition pipeline
-- Classroom-scale environment support
-- Automated attendance management
-- Supabase integration for secure data management
+- Real-time multi-face detection
+- Supabase-backed data storage
+- Classroom-scale deployment design
 
 Technology:
 - Python
@@ -157,28 +148,23 @@ Technology:
 - Deep Learning models
 - Supabase (PostgreSQL, Authentication, Storage)
 
-Focus:
-- Performance optimization
-- Real-world deployment scenarios
-- Recognition accuracy tuning
-
 GitHub: https://github.com/nihar5hah/FaceAttend
 
 ## TECHNICAL SKILLS
 
 ### AI & Automation
-- Conversational AI
-- AI Voice Assistants
+- Multi-agent orchestration
+- RAG systems & evaluation platforms
+- Conversational AI & AI Voice Assistants
 - Prompt Engineering & Structured Prompt Design
-- Prompt Validation & Deployment Workflows
 - AI Workflow Automation
 - Model Evaluation
-- AI-Assisted Rapid Product Development
+- Autonomous agent architectures
 
 ### Programming & Scripting
 - Python
 - C / C++
-- JavaScript (Basics)
+- JavaScript / TypeScript
 - Bash / Shell scripting
 
 ### AI / ML / Computer Vision
@@ -186,37 +172,38 @@ GitHub: https://github.com/nihar5hah/FaceAttend
 - Face Recognition Systems
 - Computer Vision pipelines
 - NLP fundamentals
-- Emotion Detection
-- Deep Learning basics
+- Deep Learning
 
 ### Databases & Backend
-- Supabase (PostgreSQL, Authentication, Storage)
+- Supabase (PostgreSQL, Realtime, Authentication, Storage)
 - REST APIs
 - Webhooks
 - JSON-based configuration systems
-- PostgreSQL
+- Next.js
 
 ### Systems & DevOps
 - Linux CLI
 - SSH
-- Docker (basic knowledge)
-- Embedded AI (Jetson Nano)
+- Docker
 - System-level debugging
-- Hackintosh troubleshooting
 
 ### Tools & Platforms
 - Git & GitHub (version control)
 - Retell AI (voice AI platform)
 - Vocera (voice systems)
+- OpenClaw (multi-agent framework)
 - Figma (design)
 
-### Soft Skills
-- Product thinking
-- Rapid execution
-- Problem-solving mindset
-- Debugging and system-level thinking
-- Builder-oriented approach
-- Startup-style engineering
+## HOW I BUILD AI SYSTEMS
+
+I focus on:
+- Structured prompt design
+- Evaluation-first architectures
+- Multi-agent orchestration
+- Workflow reliability
+- Deployment-aware AI systems
+
+I prioritize production-oriented systems over experimental demos.
 
 ## WORK STYLE & PHILOSOPHY
 

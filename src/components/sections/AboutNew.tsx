@@ -19,29 +19,29 @@ import { cn } from '@/lib/utils'
 
 const highlights = [
   {
-    icon: Mic,
-    title: 'AI Voice Assistants',
-    description: 'Healthcare call automation',
+    icon: MessageSquare,
+    title: 'Multi-Agent Orchestration',
+    description: 'Autonomous agent architectures',
   },
   {
-    icon: MessageSquare,
+    icon: Sparkles,
+    title: 'AI Evaluation Systems',
+    description: 'RAG & assessment platforms',
+  },
+  {
+    icon: Mic,
+    title: 'Conversational AI',
+    description: 'Production voice assistants',
+  },
+  {
+    icon: Terminal,
     title: 'Prompt Engineering',
-    description: 'LLMs & Voice Agents',
+    description: 'Structured prompt design',
   },
   {
     icon: Eye,
     title: 'Computer Vision',
-    description: 'OpenCV & face detection',
-  },
-  {
-    icon: Terminal,
-    title: 'Linux & Systems',
-    description: 'CLI, Docker, Edge AI',
-  },
-  {
-    icon: Sparkles,
-    title: 'AI-Assisted Rapid Product Development',
-    description: 'Rapid AI-assisted prototyping',
+    description: 'Real-time detection systems',
   },
 ]
 
@@ -54,7 +54,7 @@ export function AboutNew() {
       <Container className="relative z-20">
         <SectionHeading
           title="About Me"
-          subtitle="Building AI systems that actually work in the real world"
+          subtitle="Applied AI systems builder focused on production architectures"
         />
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
@@ -76,26 +76,33 @@ export function AboutNew() {
 
               <div className="relative z-10 space-y-6">
                 <p className="text-lg text-foreground-secondary leading-relaxed">
-                  I&apos;m a Computer Science student at{' '}
+                  I&apos;m a Computer Science undergraduate at{' '}
                   <span className="text-accent font-medium">{siteConfig.university}</span>
-                  , graduating in {siteConfig.graduationYear}. My focus is on
-                  building AI systems that solve real problems, not just demos
-                  that look good in presentations.
+                  , graduating in {siteConfig.graduationYear}. I specialize in
+                  building applied AI systems — multi-agent orchestration,
+                  AI evaluation platforms, and production-ready conversational AI.
                 </p>
 
                 <p className="text-lg text-foreground-secondary leading-relaxed">
                   At <span className="text-accent font-medium">Confido Health</span>,
-                  I&apos;m working on AI voice assistants that handle patient
-                  calls for healthcare clinics. This involves designing
-                  conversational flows, engineering prompts for reliability, and
-                  optimizing systems for production use across multiple locations.
+                  I&apos;m currently working on AI voice assistants that handle
+                  patient calls for healthcare clinics — designing conversational
+                  flows, engineering prompts for reliability, and optimizing
+                  systems for production use across multiple locations.
                 </p>
 
                 <p className="text-lg text-foreground-secondary leading-relaxed">
-                  Beyond voice AI, I&apos;ve built computer vision systems for
-                  automated attendance and explored the intersection of AI with
-                  practical applications. I enjoy the challenge of making AI
-                  systems work reliably in real-world conditions.
+                  Alongside my internship, I&apos;m building{' '}
+                  <span className="text-accent font-medium">KalExam</span>,
+                  a RAG-powered learning and evaluation platform, and an autonomous
+                  multi-agent system using <span className="text-accent font-medium">OpenClaw</span>{' '}
+                  with Boss–Worker architecture for 24/7 automated workflows.
+                </p>
+
+                <p className="text-lg text-foreground-secondary leading-relaxed">
+                  I prioritize production-oriented systems over experimental demos.
+                  My approach centers on structured prompt design, evaluation-first
+                  architectures, and deployment-aware AI systems.
                 </p>
 
                 <motion.div

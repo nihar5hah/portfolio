@@ -24,8 +24,8 @@ const useIsHoverDevice = () => {
   return isHover
 }
 
-function ProjectPlaceholder({ id, isFirst, image }: { id: string; isFirst: boolean; image?: string }) {
-  // If image exists, display it with Next.js optimization
+function ProjectPlaceholder({ id, isFirst, image, imagePlaceholder }: { id: string; isFirst: boolean; image?: string; imagePlaceholder?: string }) {
+  // If image exists and is not empty, display it with Next.js optimization
   if (image) {
     return (
       <Image
@@ -43,9 +43,12 @@ function ProjectPlaceholder({ id, isFirst, image }: { id: string; isFirst: boole
 
   // Otherwise show placeholder gradient
   const gradients: Record<string, string> = {
-    'healthcare-ai':
-      'from-cyan-500/30 via-blue-500/20 to-purple-500/30',
-    faceattend: 'from-emerald-500/30 via-teal-500/20 to-cyan-500/30',
+    'kalexam': 'from-indigo-500/30 via-blue-500/20 to-purple-500/30',
+    'openclaw': 'from-amber-500/30 via-orange-500/20 to-red-500/30',
+    'mission-control': 'from-emerald-500/30 via-teal-500/20 to-cyan-500/30',
+    'hireai': 'from-violet-500/30 via-purple-500/20 to-pink-500/30',
+    'healthcare-ai': 'from-cyan-500/30 via-blue-500/20 to-purple-500/30',
+    'faceattend': 'from-emerald-500/30 via-teal-500/20 to-cyan-500/30',
   }
 
   return (
@@ -61,14 +64,22 @@ function ProjectPlaceholder({ id, isFirst, image }: { id: string; isFirst: boole
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent shimmer" />
         </div>
       )}
-      <div className="w-3/4 h-3/4 rounded-xl glass-secondary p-6 relative">
-        <div className="h-3 w-1/2 bg-foreground-muted/20 rounded-full mb-4" />
-        <div className="h-2 w-3/4 bg-foreground-muted/10 rounded-full mb-2" />
-        <div className="h-2 w-2/3 bg-foreground-muted/10 rounded-full mb-6" />
-        <div className="flex gap-2">
-          <div className="h-8 w-20 bg-accent/20 rounded-lg" />
-          <div className="h-8 w-24 bg-accent/10 rounded-lg" />
-        </div>
+      <div className="w-3/4 h-3/4 rounded-xl glass-secondary p-6 relative flex flex-col items-center justify-center">
+        {imagePlaceholder ? (
+          <p className="text-foreground-muted text-sm text-center font-mono">
+            [Image Placeholder – {imagePlaceholder}]
+          </p>
+        ) : (
+          <>
+            <div className="h-3 w-1/2 bg-foreground-muted/20 rounded-full mb-4" />
+            <div className="h-2 w-3/4 bg-foreground-muted/10 rounded-full mb-2" />
+            <div className="h-2 w-2/3 bg-foreground-muted/10 rounded-full mb-6" />
+            <div className="flex gap-2">
+              <div className="h-8 w-20 bg-accent/20 rounded-lg" />
+              <div className="h-8 w-24 bg-accent/10 rounded-lg" />
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
@@ -154,7 +165,7 @@ function ProjectCard({
           className={cn('aspect-video overflow-hidden rounded-2xl p-0 relative group', isFirst && 'glow-accent-subtle')}
         >
           {/* Base image */}
-          <ProjectPlaceholder id={project.id} isFirst={isFirst} image={project.image} />
+          <ProjectPlaceholder id={project.id} isFirst={isFirst} image={project.image} imagePlaceholder={project.imagePlaceholder} />
 
           {/* Overlay with stats */}
           <motion.div
@@ -198,7 +209,7 @@ function ProjectCard({
         </h3>
 
         <p className="text-foreground-secondary mb-6 leading-relaxed">
-          {project.longDescription}
+          {project.description}
         </p>
 
         <ul className="space-y-2 mb-6">

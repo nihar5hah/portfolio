@@ -38,12 +38,20 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             <div className="bg-background border border-border rounded-2xl overflow-y-auto max-h-full">
               {/* Header */}
               <div className="relative">
-                {project.image && (
+                {project.image ? (
                   <img
                     src={project.image}
                     alt={project.title}
                     className="w-full h-64 md:h-80 object-cover"
                   />
+                ) : (
+                  <div className="w-full h-48 md:h-64 bg-gradient-to-br from-accent/20 via-accent/10 to-background flex items-center justify-center">
+                    {project.imagePlaceholder && (
+                      <p className="text-foreground-muted text-sm font-mono">
+                        [Image Placeholder – {project.imagePlaceholder}]
+                      </p>
+                    )}
+                  </div>
                 )}
                 <motion.button
                   onClick={onClose}

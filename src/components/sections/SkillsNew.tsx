@@ -33,7 +33,7 @@ export function SkillsNew() {
       <Container className="relative z-20">
         <SectionHeading
           title="Skills & Technologies"
-          subtitle="Expertise across AI, full-stack development, and systems engineering"
+          subtitle="Building applied AI systems, autonomous agents, and production infrastructure"
         />
 
         <motion.div

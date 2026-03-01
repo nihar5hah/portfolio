@@ -157,9 +157,6 @@ export function Footer() {
             © {currentYear} {siteConfig.name}. All rights reserved.
           </p>
 
-          <p className="font-mono text-xs tracking-wider uppercase">
-            Designed & Built with Craft
-          </p>
         </motion.div>
       </Container>
     </footer>

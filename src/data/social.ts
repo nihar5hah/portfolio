@@ -34,7 +34,7 @@ export const navItems: NavItem[] = [
 
 export const siteConfig = {
   name: 'Nihar Shah',
-  title: 'AI Engineer & Developer',
+  title: 'Applied AI Systems Builder',
   email: 'niharshah0405@gmail.com',
   location: 'Ahmedabad, India',
   university: 'Charotar University of Science And Technology',

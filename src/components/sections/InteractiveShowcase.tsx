@@ -16,26 +16,26 @@ import { cn } from '@/lib/utils'
 const showcaseItems = [
   {
     icon: Brain,
-    title: 'AI Voice Assistants',
-    description: 'Building conversational systems for healthcare that handle patient calls at scale',
+    title: 'Multi-Agent Orchestration',
+    description: 'Designing autonomous agent architectures with structured delegation and self-healing workflows',
     accent: 'from-indigo-500 to-indigo-600',
   },
   {
     icon: Code2,
-    title: 'Prompt Engineering',
-    description: 'Designing reliable LLM interactions through careful prompt design and validation',
+    title: 'AI Evaluation Systems',
+    description: 'Building RAG-powered platforms with source-grounded responses and citation tracking',
     accent: 'from-indigo-500 to-purple-600',
   },
   {
     icon: Zap,
-    title: 'Computer Vision',
-    description: 'Real-time visual analysis for automated attendance and object detection systems',
+    title: 'Conversational AI',
+    description: 'Production voice assistants and prompt engineering for reliable, scalable AI interactions',
     accent: 'from-purple-500 to-pink-600',
   },
   {
     icon: Shield,
-    title: 'Production Systems',
-    description: 'Deploying AI systems that work reliably in real-world conditions with monitoring',
+    title: 'Deployment-Aware Systems',
+    description: 'Monitoring dashboards, gateway health checks, and production observability for AI agents',
     accent: 'from-indigo-500 to-indigo-400',
   },
 ]
@@ -68,8 +68,8 @@ export function InteractiveShowcase() {
             What I build
           </h2>
           <p className="text-lg text-foreground-secondary max-w-2xl leading-relaxed">
-            Specialized in translating complex AI concepts into production systems
-            that solve real problems for real people.
+            Building applied AI systems with structured architectures
+            designed for production reliability.
           </p>
         </motion.div>
 
