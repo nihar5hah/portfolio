@@ -21,10 +21,11 @@ const SHAH = 'Shah'
 const TOTAL_CHARS = NIHAR.length + 1 + SHAH.length
 
 // Texts cycling through each font (Gujarati & Hindi last)
-const NIHAR_TEXTS = ['Nihar', 'Nihar', 'Nihar', 'Nihar', 'નિહાર', 'निहार']
-const SHAH_TEXTS  = ['Shah',  'Shah',  'Shah',  'Shah',  'શાહ',  'शाह']
+const NIHAR_TEXTS = ['Nihar', 'Nihar', 'Nihar', 'Nihar', 'Nihar', 'નિહાર', 'निहार']
+const SHAH_TEXTS  = ['Shah',  'Shah',  'Shah',  'Shah',  'Shah',  'શાહ',  'शाह']
 
 const GOOEY_FONTS = [
+  'var(--font-serif)',          // Instrument Serif
   'var(--font-jubilee)',        // OT Jubilee Platinum
   'var(--font-weird-serif)',    // OT Weird Serif
   'var(--font-souvenir-medium)', // Souvenir Medium
@@ -228,7 +229,7 @@ export function HeroNew() {
 
               {/* Sub-title — static */}
               <span className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground-secondary font-serif">
-                Building Applied AI Systems &amp; Autonomous Agent Architectures
+                Applied AI Systems &amp; Autonomous Agents
               </span>
             </h1>
           </motion.div>
