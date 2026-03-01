@@ -40,7 +40,9 @@
       "Bash(printf y\\\\n:*)",
       "Bash(vercel deploy:*)",
       "Bash(vercel logs:*)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(pdftotext:*)",
+      "Bash(mdls:*)"
     ]
   }
 }

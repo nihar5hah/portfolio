@@ -272,7 +272,7 @@ export function HeroNew() {
             </motion.a>
 
             <motion.a
-              href="/resume.pdf"
+              href={`/resume.pdf?v=${Date.now()}`}
               download
               className={cn(
                 'relative px-8 py-4 group overflow-hidden rounded-none',

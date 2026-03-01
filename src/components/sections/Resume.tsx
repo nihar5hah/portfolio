@@ -22,12 +22,12 @@ export function Resume() {
               align="center"
             />
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button href="/resume.pdf" size="lg" download>
+              <Button href={`/resume.pdf?v=${Date.now()}`} size="lg" download>
                 <Download className="w-5 h-5" />
                 Download PDF
               </Button>
               <Button
-                href="/resume.pdf"
+                href={`/resume.pdf?v=${Date.now()}`}
                 variant="secondary"
                 size="lg"
               >
@@ -43,7 +43,7 @@ export function Resume() {
         }
       >
         <iframe
-          src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=0"
+          src={`/resume.pdf?v=${Date.now()}#toolbar=0&navpanes=0&scrollbar=0`}
           className="w-full h-full"
           title="Resume"
           style={{ background: 'white' }}
