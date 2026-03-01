@@ -111,7 +111,7 @@ export function HeroNew() {
         style={{ x: springOrb2X, y: springOrb2Y, right: '-144px', bottom: '-144px' }}
       />
 
-      <Container className="relative z-10 py-32 md:py-40">
+      <Container className="relative z-10 py-32 md:py-40 w-full">
         <motion.div
           className="max-w-5xl"
           initial={{ opacity: 0, y: 30 }}
