@@ -134,7 +134,7 @@ export function GooeyText({
       </svg>
 
       <div
-        style={{ display: 'grid', filter: `url(#${filterId})` }}
+        style={{ display: 'grid', justifyItems: 'start', filter: `url(#${filterId})` }}
       >
         <span
           ref={text1Ref}

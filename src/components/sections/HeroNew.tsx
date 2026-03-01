@@ -227,6 +227,11 @@ export function HeroNew() {
                 )}
               </AnimatePresence>
 
+              {/* Student line */}
+              <span className="block text-base md:text-lg text-foreground-muted font-mono tracking-wide mt-1 mb-2">
+                CS Student · CHARUSAT
+              </span>
+
               {/* Sub-title — static */}
               <span className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground-secondary font-serif">
                 Applied AI Systems &amp; Autonomous Agents
