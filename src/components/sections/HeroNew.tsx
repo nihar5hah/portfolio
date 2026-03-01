@@ -229,7 +229,7 @@ export function HeroNew() {
 
               {/* Sub-title — static */}
               <span className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground-secondary font-serif">
-                Applied AI Systems &amp; Autonomous Agents
+                Computer Science Undergraduate | Applied AI Systems Builder
               </span>
             </h1>
           </motion.div>
