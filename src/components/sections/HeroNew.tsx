@@ -142,7 +142,7 @@ export function HeroNew() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: easings.mechanical }}
           >
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-medium leading-tight text-foreground">
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-medium leading-tight text-foreground text-left">
 
               <AnimatePresence mode="wait">
                 {!isCycling ? (
@@ -226,11 +226,6 @@ export function HeroNew() {
                   </motion.span>
                 )}
               </AnimatePresence>
-
-              {/* Student line */}
-              <span className="block text-base md:text-lg text-foreground-muted font-mono tracking-wide mt-1 mb-2">
-                CS Student · CHARUSAT
-              </span>
 
               {/* Sub-title — static */}
               <span className="text-3xl md:text-4xl lg:text-5xl font-light text-foreground-secondary font-serif">
