@@ -80,6 +80,8 @@ Core capabilities:
 - Context-aware chat interface with citation tracking
 - Scalable async architecture with caching and progress tracking
 
+GitHub: https://github.com/nihar5hah/KalExam
+
 ### OpenClaw Multi-Agent Orchestration System (Current)
 
 Description:
@@ -103,6 +105,8 @@ Core capabilities:
 - Event-driven updates via Supabase Realtime
 - Global search across logs & workflows
 - Modular Next.js architecture
+
+GitHub: https://github.com/nihar5hah/mission-control
 
 ### HireAI — AI-Powered Job Assessment Platform
 
@@ -192,7 +196,13 @@ GitHub: https://github.com/nihar5hah/FaceAttend
 - Retell AI (voice AI platform)
 - Vocera (voice systems)
 - OpenClaw (multi-agent framework)
-- Figma (design)
+
+## CURRENTLY BUILDING (Active Projects)
+
+1. **KalExam** — AI-powered RAG learning & evaluation platform (in active development)
+2. **Multi-Agent Infrastructure** — 24/7 autonomous AI system using OpenClaw with Boss–Worker architecture (in active development)
+
+Both are actively being built alongside the Confido Health internship.
 
 ## HOW I BUILD AI SYSTEMS
 
