@@ -14,7 +14,7 @@ Education:
   - Duration: 2023 – 2027
   - Status: Student
 
-Current Location: Gujarat, India
+Current Location: Ahmedabad, Gujarat, India
 
 Links:
 - Portfolio: https://www.niharshah.in
