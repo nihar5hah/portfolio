@@ -17,6 +17,7 @@ export interface Project {
   longDescription: string
   technologies: string[]
   featured: boolean
+  inProgress?: boolean
   highlights: string[]
   image?: string
   imagePlaceholder?: string

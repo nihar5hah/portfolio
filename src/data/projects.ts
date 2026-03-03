@@ -10,6 +10,7 @@ export const projects: Project[] = [
       'KalExam is an AI-driven learning and evaluation platform that generates personalized study strategies from syllabus documents, study materials, and past papers. The system uses RAG-powered contextual learning to deliver source-grounded responses with full citation tracking, ensuring students can verify every answer against original material. It features multi-model AI routing that dynamically selects between models to optimize for speed and response quality depending on query complexity. The platform supports source ingestion from multiple formats including PDFs, websites, and YouTube transcripts, building a comprehensive knowledge base per course. A context-aware chat interface provides conversational study assistance with persistent memory across sessions. The architecture is built on a scalable async foundation with intelligent caching and real-time progress tracking for both individual and batch study workflows.',
     technologies: ['RAG', 'Multi-Model AI', 'PDF Ingestion', 'YouTube Transcripts', 'Async Architecture', 'Caching'],
     featured: true,
+    inProgress: true,
     image: '/projects/kalexam.png',
     imagePlaceholder: 'KalExam Dashboard Screenshot',
     highlights: [

@@ -203,6 +203,12 @@ function ProjectCard({
             {isFirst ? 'Featured Project' : 'Project'}
           </Badge>
         )}
+        {project.inProgress && (
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 mb-4 ml-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            In Progress
+          </div>
+        )}
 
         <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
           {project.title}
