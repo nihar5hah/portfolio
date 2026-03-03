@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const model = client.getGenerativeModel({ model: 'gemini-2.5-flash' })
+    const model = client.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' })
 
     const response = await model.generateContent([
       {
