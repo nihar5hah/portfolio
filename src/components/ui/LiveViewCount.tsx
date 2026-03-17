@@ -26,7 +26,14 @@ export function LiveViewCount() {
       }
 
       const storageKey = 'portfolio-live-viewer-key'
-      const existingKey = window.sessionStorage.getItem(storageKey)
+      let existingKey: string | null = null
+
+      try {
+        existingKey = window.sessionStorage.getItem(storageKey)
+      } catch {
+        existingKey = null
+      }
+
       const presenceKey =
         existingKey ||
         (typeof crypto !== 'undefined' && 'randomUUID' in crypto
@@ -34,7 +41,11 @@ export function LiveViewCount() {
           : `${Date.now()}-${Math.random().toString(36).slice(2)}`)
 
       if (!existingKey) {
-        window.sessionStorage.setItem(storageKey, presenceKey)
+        try {
+          window.sessionStorage.setItem(storageKey, presenceKey)
+        } catch {
+          // noop
+        }
       }
 
       const channel = supabase.channel('portfolio-live-viewers', {
@@ -47,8 +58,11 @@ export function LiveViewCount() {
 
       const updateCountFromPresence = () => {
         const state = channel.presenceState()
-        const uniqueViewerCount = Object.keys(state).length
-        setViewerCount(uniqueViewerCount)
+        const totalConnections = Object.values(state).reduce((count, presences) => {
+          return count + presences.length
+        }, 0)
+
+        setViewerCount(totalConnections)
       }
 
       channel
@@ -65,6 +79,7 @@ export function LiveViewCount() {
           if (status === 'SUBSCRIBED') {
             setIsConnected(true)
             await channel.track({ online_at: new Date().toISOString() })
+            updateCountFromPresence()
           }
 
           if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
