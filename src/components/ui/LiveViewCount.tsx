@@ -8,14 +8,11 @@ import { getBrowserSupabaseClient } from '@/lib/supabase-browser'
 export function LiveViewCount() {
   const [viewerCount, setViewerCount] = useState<number>(0)
   const [isConnected, setIsConnected] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!mounted) return
+    // Mark as client-side and start connection immediately
+    setIsClient(true)
 
     let isCancelled = false
     let cleanup: (() => void) | undefined
@@ -100,19 +97,19 @@ export function LiveViewCount() {
       isCancelled = true
       cleanup?.()
     }
-  }, [mounted])
+  }, [])
 
-  // Prevent hydration mismatch by not rendering until mounted
-  if (!mounted) return null
+  // Prevent hydration mismatch by not rendering until client-side
+  if (!isClient) return null
 
   return (
     <div
-      className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-background-secondary/50 text-foreground-secondary transition-colors cursor-default"
+      className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg hover:bg-background-secondary/50 text-foreground-secondary transition-colors cursor-default"
       title={isConnected ? "Live viewers (Real-time)" : "Connecting..."}
     >
-      <Eye className="w-4 h-4 hover:text-accent transition-colors" />
+      <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 hover:text-accent transition-colors" />
       
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1 sm:gap-1.5">
         <AnimatePresence mode="wait">
           <motion.span
             key={viewerCount}
@@ -120,7 +117,7 @@ export function LiveViewCount() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
             transition={{ duration: 0.2 }}
-            className="text-sm font-medium tabular-nums"
+            className="text-xs sm:text-sm font-medium tabular-nums"
           >
             {viewerCount}
           </motion.span>
