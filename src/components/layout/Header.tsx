@@ -8,6 +8,7 @@ import { Container } from './Container'
 import { navItems, siteConfig } from '@/data/social'
 import { easings } from '@/components/motion/animations'
 import { useTheme } from '@/hooks/useTheme'
+import { LiveViewCount } from '@/components/ui/LiveViewCount'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -140,73 +141,78 @@ export function Header() {
               ))}
             </ul>
 
-            {/* Theme toggle */}
-            {mounted && (
+            {/* Right side controls */}
+            <div className="flex items-center gap-3">
+              <LiveViewCount />
+
+              {/* Theme toggle */}
+              {mounted && (
+                <motion.button
+                  onClick={toggleTheme}
+                  className="hidden md:flex p-2 text-foreground-secondary hover:text-accent transition-colors rounded-lg hover:bg-background-secondary/50"
+                  aria-label="Toggle theme"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <AnimatePresence mode="wait">
+                    {theme === 'dark' ? (
+                      <motion.div
+                        key="sun"
+                        initial={{ rotate: -90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: 90, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Sun className="w-5 h-5" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="moon"
+                        initial={{ rotate: 90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: -90, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Moon className="w-5 h-5" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              )}
+
+              {/* Mobile menu button */}
               <motion.button
-                onClick={toggleTheme}
-                className="hidden md:flex p-2 text-foreground-secondary hover:text-accent transition-colors rounded-lg hover:bg-background-secondary/50"
-                aria-label="Toggle theme"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="md:hidden p-2 text-foreground-secondary hover:text-foreground transition-colors rounded-lg glass-tertiary"
+                aria-label="Toggle menu"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <AnimatePresence mode="wait">
-                  {theme === 'dark' ? (
+                  {isMobileMenuOpen ? (
                     <motion.div
-                      key="sun"
+                      key="close"
                       initial={{ rotate: -90, opacity: 0 }}
                       animate={{ rotate: 0, opacity: 1 }}
                       exit={{ rotate: 90, opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <Sun className="w-5 h-5" />
+                      <X className="w-6 h-6" />
                     </motion.div>
                   ) : (
                     <motion.div
-                      key="moon"
+                      key="menu"
                       initial={{ rotate: 90, opacity: 0 }}
                       animate={{ rotate: 0, opacity: 1 }}
                       exit={{ rotate: -90, opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <Moon className="w-5 h-5" />
+                      <Menu className="w-6 h-6" />
                     </motion.div>
                   )}
                 </AnimatePresence>
               </motion.button>
-            )}
-
-            {/* Mobile menu button */}
-            <motion.button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-foreground-secondary hover:text-foreground transition-colors rounded-lg glass-tertiary"
-              aria-label="Toggle menu"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <AnimatePresence mode="wait">
-                {isMobileMenuOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <X className="w-6 h-6" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Menu className="w-6 h-6" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
+            </div>
           </nav>
         </Container>
       </motion.header>

@@ -1,0 +1,138 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Eye } from 'lucide-react'
+import { getBrowserSupabaseClient } from '@/lib/supabase-browser'
+
+export function LiveViewCount() {
+  const [viewerCount, setViewerCount] = useState<number>(0)
+  const [isConnected, setIsConnected] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
+    let isCancelled = false
+    let cleanup: (() => void) | undefined
+
+    const init = async () => {
+      const supabase = await getBrowserSupabaseClient()
+      if (!supabase || isCancelled) {
+        setIsConnected(false)
+        setViewerCount(0)
+        return
+      }
+
+      const storageKey = 'portfolio-live-viewer-key'
+      const existingKey = window.sessionStorage.getItem(storageKey)
+      const presenceKey =
+        existingKey ||
+        (typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`)
+
+      if (!existingKey) {
+        window.sessionStorage.setItem(storageKey, presenceKey)
+      }
+
+      const channel = supabase.channel('portfolio-live-viewers', {
+        config: {
+          presence: {
+            key: presenceKey,
+          },
+        },
+      })
+
+      const updateCountFromPresence = () => {
+        const state = channel.presenceState()
+        const uniqueViewerCount = Object.keys(state).length
+        setViewerCount(uniqueViewerCount)
+      }
+
+      channel
+        .on('presence', { event: 'sync' }, () => {
+          updateCountFromPresence()
+        })
+        .on('presence', { event: 'join' }, () => {
+          updateCountFromPresence()
+        })
+        .on('presence', { event: 'leave' }, () => {
+          updateCountFromPresence()
+        })
+        .subscribe(async (status) => {
+          if (status === 'SUBSCRIBED') {
+            setIsConnected(true)
+            await channel.track({ online_at: new Date().toISOString() })
+          }
+
+          if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+            setIsConnected(false)
+          }
+        })
+
+      const handleBeforeUnload = async () => {
+        try {
+          await channel.untrack()
+        } catch {
+          // noop
+        }
+      }
+
+      window.addEventListener('beforeunload', handleBeforeUnload)
+
+      cleanup = () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload)
+        setIsConnected(false)
+        void channel.untrack().finally(() => {
+          void supabase.removeChannel(channel)
+        })
+      }
+    }
+
+    void init()
+
+    return () => {
+      isCancelled = true
+      cleanup?.()
+    }
+  }, [mounted])
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) return null
+
+  return (
+    <div
+      className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-background-secondary/50 text-foreground-secondary transition-colors cursor-default"
+      title={isConnected ? "Live viewers (Real-time)" : "Connecting..."}
+    >
+      <Eye className="w-4 h-4 hover:text-accent transition-colors" />
+      
+      <div className="flex items-center gap-1.5">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={viewerCount}
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.2 }}
+            className="text-sm font-medium tabular-nums"
+          >
+            {viewerCount}
+          </motion.span>
+        </AnimatePresence>
+
+        {isConnected && (
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent" />
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
