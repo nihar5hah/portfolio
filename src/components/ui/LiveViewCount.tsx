@@ -11,76 +11,44 @@ export function LiveViewCount() {
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
+    // Mark as client-side and start connection immediately
     setIsClient(true)
 
     let isCancelled = false
-    let channelCleanup: (() => void) | undefined
-    let reconnectTimer: ReturnType<typeof setTimeout> | undefined
-    let reconnectAttempt = 0
-    let isConnecting = false
+    let cleanup: (() => void) | undefined
 
-    const storageKey = 'portfolio-live-viewer-key'
-    let existingKey: string | null = null
-
-    try {
-      existingKey = window.sessionStorage.getItem(storageKey)
-    } catch {
-      existingKey = null
-    }
-
-    const presenceKey =
-      existingKey ||
-      (typeof crypto !== 'undefined' && 'randomUUID' in crypto
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random().toString(36).slice(2)}`)
-
-    if (!existingKey) {
-      try {
-        window.sessionStorage.setItem(storageKey, presenceKey)
-      } catch {
-        // noop
-      }
-    }
-
-    const clearReconnectTimer = () => {
-      if (!reconnectTimer) return
-      clearTimeout(reconnectTimer)
-      reconnectTimer = undefined
-    }
-
-    const disconnectChannel = () => {
-      channelCleanup?.()
-      channelCleanup = undefined
-    }
-
-    const scheduleReconnect = () => {
-      if (isCancelled) return
-
-      setIsConnected(false)
-      disconnectChannel()
-      clearReconnectTimer()
-
-      const delay = Math.min(1000 * 2 ** reconnectAttempt, 10000)
-      reconnectAttempt += 1
-
-      reconnectTimer = setTimeout(() => {
-        void connect()
-      }, delay)
-    }
-
-    const connect = async () => {
-      if (isCancelled || isConnecting) return
-      isConnecting = true
-
-      disconnectChannel()
-      clearReconnectTimer()
-
+    const init = async () => {
       try {
         const supabase = await getBrowserSupabaseClient()
         if (!supabase || isCancelled) {
-          scheduleReconnect()
+          setIsConnected(false)
+          setViewerCount(0)
           return
         }
+
+        const storageKey = 'portfolio-live-viewer-key'
+        let existingKey: string | null = null
+
+        try {
+          existingKey = window.sessionStorage.getItem(storageKey)
+        } catch {
+          existingKey = null
+        }
+
+        const presenceKey =
+          existingKey ||
+          (typeof crypto !== 'undefined' && 'randomUUID' in crypto
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`)
+
+        try {
+          if (!existingKey) {
+            window.sessionStorage.setItem(storageKey, presenceKey)
+          }
+        } catch {
+          // noop
+        }
+      
 
         const channel = supabase.channel('portfolio-live-viewers', {
           config: {
@@ -110,35 +78,29 @@ export function LiveViewCount() {
             updateCountFromPresence()
           })
           .subscribe(async (status) => {
-            if (isCancelled) return
-
             if (status === 'SUBSCRIBED') {
-              reconnectAttempt = 0
               setIsConnected(true)
               setViewerCount((count) => Math.max(count, 1))
-
-              const trackResult = await channel.track({ online_at: new Date().toISOString() })
-              if (trackResult !== 'ok') {
-                scheduleReconnect()
-                return
-              }
-
+              await channel.track({ online_at: new Date().toISOString() })
               updateCountFromPresence()
-              return
             }
 
             if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
-              scheduleReconnect()
+              setIsConnected(false)
             }
           })
 
-        const handleBeforeUnload = () => {
-          void channel.untrack()
+        const handleBeforeUnload = async () => {
+          try {
+            await channel.untrack()
+          } catch {
+            // noop
+          }
         }
 
         window.addEventListener('beforeunload', handleBeforeUnload)
 
-        channelCleanup = () => {
+        cleanup = () => {
           window.removeEventListener('beforeunload', handleBeforeUnload)
           setIsConnected(false)
           void channel.untrack().finally(() => {
@@ -146,33 +108,16 @@ export function LiveViewCount() {
           })
         }
       } catch {
-        scheduleReconnect()
-      } finally {
-        isConnecting = false
+        setIsConnected(false)
+        setViewerCount(0)
       }
     }
 
-    const handleOnline = () => {
-      void connect()
-    }
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        void connect()
-      }
-    }
-
-    window.addEventListener('online', handleOnline)
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-
-    void connect()
+    void init()
 
     return () => {
       isCancelled = true
-      clearReconnectTimer()
-      window.removeEventListener('online', handleOnline)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      disconnectChannel()
+      cleanup?.()
     }
   }, [])
 
