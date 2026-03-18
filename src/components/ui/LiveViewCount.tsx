@@ -18,91 +18,98 @@ export function LiveViewCount() {
     let cleanup: (() => void) | undefined
 
     const init = async () => {
-      const supabase = await getBrowserSupabaseClient()
-      if (!supabase || isCancelled) {
+      try {
+        const supabase = await getBrowserSupabaseClient()
+        if (!supabase || isCancelled) {
+          setIsConnected(false)
+          setViewerCount(0)
+          return
+        }
+
+        const storageKey = 'portfolio-live-viewer-key'
+        let existingKey: string | null = null
+
+        try {
+          existingKey = window.sessionStorage.getItem(storageKey)
+        } catch {
+          existingKey = null
+        }
+
+        const presenceKey =
+          existingKey ||
+          (typeof crypto !== 'undefined' && 'randomUUID' in crypto
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`)
+
+        try {
+          if (!existingKey) {
+            window.sessionStorage.setItem(storageKey, presenceKey)
+          }
+        } catch {
+          // noop
+        }
+      
+
+        const channel = supabase.channel('portfolio-live-viewers', {
+          config: {
+            presence: {
+              key: presenceKey,
+            },
+          },
+        })
+
+        const updateCountFromPresence = () => {
+          const state = channel.presenceState()
+          const totalConnections = Object.values(state).reduce((count, presences) => {
+            return count + presences.length
+          }, 0)
+
+          setViewerCount(totalConnections)
+        }
+
+        channel
+          .on('presence', { event: 'sync' }, () => {
+            updateCountFromPresence()
+          })
+          .on('presence', { event: 'join' }, () => {
+            updateCountFromPresence()
+          })
+          .on('presence', { event: 'leave' }, () => {
+            updateCountFromPresence()
+          })
+          .subscribe(async (status) => {
+            if (status === 'SUBSCRIBED') {
+              setIsConnected(true)
+              setViewerCount((count) => Math.max(count, 1))
+              await channel.track({ online_at: new Date().toISOString() })
+              updateCountFromPresence()
+            }
+
+            if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+              setIsConnected(false)
+            }
+          })
+
+        const handleBeforeUnload = async () => {
+          try {
+            await channel.untrack()
+          } catch {
+            // noop
+          }
+        }
+
+        window.addEventListener('beforeunload', handleBeforeUnload)
+
+        cleanup = () => {
+          window.removeEventListener('beforeunload', handleBeforeUnload)
+          setIsConnected(false)
+          void channel.untrack().finally(() => {
+            void supabase.removeChannel(channel)
+          })
+        }
+      } catch {
         setIsConnected(false)
         setViewerCount(0)
-        return
-      }
-
-      const storageKey = 'portfolio-live-viewer-key'
-      let existingKey: string | null = null
-
-      try {
-        existingKey = window.sessionStorage.getItem(storageKey)
-      } catch {
-        existingKey = null
-      }
-
-      const presenceKey =
-        existingKey ||
-        (typeof crypto !== 'undefined' && 'randomUUID' in crypto
-          ? crypto.randomUUID()
-          : `${Date.now()}-${Math.random().toString(36).slice(2)}`)
-
-      if (!existingKey) {
-        try {
-          window.sessionStorage.setItem(storageKey, presenceKey)
-        } catch {
-          // noop
-        }
-      }
-
-      const channel = supabase.channel('portfolio-live-viewers', {
-        config: {
-          presence: {
-            key: presenceKey,
-          },
-        },
-      })
-
-      const updateCountFromPresence = () => {
-        const state = channel.presenceState()
-        const totalConnections = Object.values(state).reduce((count, presences) => {
-          return count + presences.length
-        }, 0)
-
-        setViewerCount(totalConnections)
-      }
-
-      channel
-        .on('presence', { event: 'sync' }, () => {
-          updateCountFromPresence()
-        })
-        .on('presence', { event: 'join' }, () => {
-          updateCountFromPresence()
-        })
-        .on('presence', { event: 'leave' }, () => {
-          updateCountFromPresence()
-        })
-        .subscribe(async (status) => {
-          if (status === 'SUBSCRIBED') {
-            setIsConnected(true)
-            await channel.track({ online_at: new Date().toISOString() })
-            updateCountFromPresence()
-          }
-
-          if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
-            setIsConnected(false)
-          }
-        })
-
-      const handleBeforeUnload = async () => {
-        try {
-          await channel.untrack()
-        } catch {
-          // noop
-        }
-      }
-
-      window.addEventListener('beforeunload', handleBeforeUnload)
-
-      cleanup = () => {
-        window.removeEventListener('beforeunload', handleBeforeUnload)
-        setIsConnected(false)
-        void channel.untrack().finally(() => {
-          void supabase.removeChannel(channel)
-        })
       }
     }
 
