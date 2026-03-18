@@ -30,6 +30,7 @@ export const navItems: NavItem[] = [
   { label: 'Experience', href: '#experience' },
   { label: 'Resume', href: '#resume' },
   { label: 'Contact', href: '#contact' },
+  { label: 'Blogs', href: '/blogs' },
 ]
 
 export const siteConfig = {

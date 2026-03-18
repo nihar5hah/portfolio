@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { Menu, X, Moon, Sun } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Container } from './Container'
 import { navItems, siteConfig } from '@/data/social'
@@ -15,6 +17,8 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('')
   const [mounted, setMounted] = useState(false)
+  const pathname = usePathname()
+  const isHomePage = pathname === '/'
 
   let theme = 'dark'
   let toggleTheme = () => {}
@@ -61,10 +65,31 @@ export function Header() {
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false)
+    
+    // If it's a page link (not an anchor), use router navigation
+    if (!href.startsWith('#')) {
+      return // Let the Link component handle it
+    }
+    
+    // If we're not on the home page, navigate to home first
+    if (!isHomePage) {
+      window.location.href = '/' + href
+      return
+    }
+    
+    // Scroll to section
     const element = document.querySelector(href)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
+  }
+
+  // Check if a nav item is active
+  const isNavActive = (href: string) => {
+    if (href.startsWith('#')) {
+      return isHomePage && activeSection === href.slice(1)
+    }
+    return pathname.startsWith(href)
   }
 
   return (
@@ -103,25 +128,13 @@ export function Header() {
             </motion.a>
 
             <ul className="hidden md:flex items-center gap-1">
-              {navItems.map((item, index) => (
-                <motion.li
-                  key={item.href}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05, duration: 0.3 }}
-                >
-                  <motion.button
-                    onClick={() => handleNavClick(item.href)}
-                    className={cn(
-                      'relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 hover:text-foreground group',
-                      activeSection === item.href.slice(1)
-                        ? 'text-accent'
-                        : 'text-foreground-secondary'
-                    )}
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {activeSection === item.href.slice(1) && (
+              {navItems.map((item, index) => {
+                const isPageLink = !item.href.startsWith('#')
+                const isActive = isNavActive(item.href)
+                
+                const NavContent = (
+                  <>
+                    {isActive && (
                       <motion.span
                         layoutId="activeNav"
                         className="absolute inset-0 glass-tertiary rounded-lg"
@@ -136,9 +149,42 @@ export function Header() {
                       whileHover={{ scaleX: 1, opacity: 1 }}
                       transition={{ duration: 0.2, ease: 'easeOut' }}
                     />
-                  </motion.button>
-                </motion.li>
-              ))}
+                  </>
+                )
+                
+                return (
+                  <motion.li
+                    key={item.href}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                  >
+                    {isPageLink ? (
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          'relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 hover:text-foreground group inline-block',
+                          isActive ? 'text-accent' : 'text-foreground-secondary'
+                        )}
+                      >
+                        {NavContent}
+                      </Link>
+                    ) : (
+                      <motion.button
+                        onClick={() => handleNavClick(item.href)}
+                        className={cn(
+                          'relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 hover:text-foreground group',
+                          isActive ? 'text-accent' : 'text-foreground-secondary'
+                        )}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        {NavContent}
+                      </motion.button>
+                    )}
+                  </motion.li>
+                )
+              })}
             </ul>
 
             {/* Right side controls */}
@@ -247,26 +293,46 @@ export function Header() {
               transition={{ duration: 0.3, ease: easings.smooth }}
             >
               <ul className="flex flex-col gap-1">
-                {navItems.map((item, index) => (
-                  <motion.li
-                    key={item.href}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <button
-                      onClick={() => handleNavClick(item.href)}
-                      className={cn(
-                        'w-full text-left px-4 py-3 text-base font-medium rounded-xl transition-all duration-300',
-                        activeSection === item.href.slice(1)
-                          ? 'text-accent glass-tertiary'
-                          : 'text-foreground-secondary hover:text-foreground hover:bg-background-tertiary/50'
-                      )}
+                {navItems.map((item, index) => {
+                  const isPageLink = !item.href.startsWith('#')
+                  const isActive = isNavActive(item.href)
+                  
+                  return (
+                    <motion.li
+                      key={item.href}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
                     >
-                      {item.label}
-                    </button>
-                  </motion.li>
-                ))}
+                      {isPageLink ? (
+                        <Link
+                          href={item.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={cn(
+                            'block w-full text-left px-4 py-3 text-base font-medium rounded-xl transition-all duration-300',
+                            isActive
+                              ? 'text-accent glass-tertiary'
+                              : 'text-foreground-secondary hover:text-foreground hover:bg-background-tertiary/50'
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={() => handleNavClick(item.href)}
+                          className={cn(
+                            'w-full text-left px-4 py-3 text-base font-medium rounded-xl transition-all duration-300',
+                            isActive
+                              ? 'text-accent glass-tertiary'
+                              : 'text-foreground-secondary hover:text-foreground hover:bg-background-tertiary/50'
+                          )}
+                        >
+                          {item.label}
+                        </button>
+                      )}
+                    </motion.li>
+                  )
+                })}
               </ul>
             </motion.nav>
           </motion.div>
