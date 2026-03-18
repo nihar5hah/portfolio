@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { IBM_Plex_Mono, Instrument_Serif, Noto_Sans_Gujarati, Noto_Sans_Devanagari } from 'next/font/google'
 import { ThemeProvider } from '@/hooks/useTheme'
+import { Header } from '@/components/layout/Header'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import { GlobalInteractions } from '@/components/layout/GlobalInteractions'
 import { ChatWidget } from '@/components/ui/ChatWidget'
@@ -110,6 +111,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background font-sans antialiased">
         <ThemeProvider>
           <GlobalInteractions />
+          <Header />
           <ScrollProgress />
           {children}
           <ChatWidget />

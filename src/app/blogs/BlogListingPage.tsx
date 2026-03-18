@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Container } from '@/components/layout/Container'
 import { FeaturedPost, BlogCard } from '@/components/blog'
@@ -49,10 +48,9 @@ export function BlogListingPage({ featuredPost, posts, tags }: BlogListingPagePr
   
   const hasPosts = featuredPost || posts.length > 0
   const hasResults = (showFeaturedPost && featuredPost) || filteredPosts.length > 0
-
+  
   return (
     <>
-      <Header />
       <main className="min-h-screen pt-24 pb-16">
         <Container>
           {/* Header section */}

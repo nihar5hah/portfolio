@@ -1,4 +1,3 @@
-import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { HeroNew } from '@/components/sections/HeroNew'
 import { CurrentlyBuilding } from '@/components/sections/CurrentlyBuilding'
@@ -14,7 +13,6 @@ import { ContactNew } from '@/components/sections/ContactNew'
 export default function Home() {
   return (
     <>
-      <Header />
       <main>
         <HeroNew />
         <CurrentlyBuilding />

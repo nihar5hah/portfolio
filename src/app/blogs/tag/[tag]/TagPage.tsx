@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Container } from '@/components/layout/Container'
 import { BlogCard } from '@/components/blog'
@@ -19,7 +18,6 @@ export function TagPage({ tag, posts, allTags }: TagPageProps) {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen pt-24 pb-16">
         <Container>
           {/* Header section */}

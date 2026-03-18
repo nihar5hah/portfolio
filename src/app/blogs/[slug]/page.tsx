@@ -4,7 +4,6 @@ import { compileMDX } from 'next-mdx-remote/rsc'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypePrettyCode from 'rehype-pretty-code'
-import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Container } from '@/components/layout/Container'
 import {
@@ -113,7 +112,6 @@ export default async function BlogPost({ params }: Props) {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen pt-24 pb-16">
         <Container>
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
