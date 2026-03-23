@@ -46,6 +46,7 @@ function ProjectPlaceholder({ id, isFirst, image, imagePlaceholder }: { id: stri
     'kalexam': 'from-indigo-500/30 via-blue-500/20 to-purple-500/30',
     'openclaw': 'from-amber-500/30 via-orange-500/20 to-red-500/30',
     'mission-control': 'from-emerald-500/30 via-teal-500/20 to-cyan-500/30',
+    'voiceserve': 'from-rose-500/30 via-orange-500/20 to-amber-500/30',
     'hireai': 'from-violet-500/30 via-purple-500/20 to-pink-500/30',
     'healthcare-ai': 'from-cyan-500/30 via-blue-500/20 to-purple-500/30',
     'faceattend': 'from-emerald-500/30 via-teal-500/20 to-cyan-500/30',

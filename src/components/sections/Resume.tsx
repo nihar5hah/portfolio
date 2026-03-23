@@ -6,6 +6,7 @@ import { Container } from '@/components/layout/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Button } from '@/components/ui/Button'
 import { ContainerScroll } from '@/components/ui/container-scroll-animation'
+import { resumeFile } from '@/data/resume-file'
 
 export function Resume() {
   return (
@@ -22,12 +23,12 @@ export function Resume() {
               align="center"
             />
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button href={`/resume.pdf?v=${Date.now()}`} size="lg" download>
+              <Button href={resumeFile.url} size="lg" download>
                 <Download className="w-5 h-5" />
                 Download PDF
               </Button>
               <Button
-                href={`/resume.pdf?v=${Date.now()}`}
+                href={resumeFile.url}
                 variant="secondary"
                 size="lg"
               >
@@ -37,13 +38,13 @@ export function Resume() {
             </div>
             <div className="inline-flex items-center gap-2 text-foreground-muted text-sm mt-2">
               <FileText className="w-4 h-4" />
-              <span>Last updated: March 2026</span>
+              <span>Last updated: {resumeFile.lastUpdatedLabel}</span>
             </div>
           </div>
         }
       >
         <iframe
-          src={`/resume.pdf?v=${Date.now()}#toolbar=0&navpanes=0&scrollbar=0`}
+          src={`${resumeFile.url}#toolbar=0&navpanes=0&scrollbar=0`}
           className="w-full h-full"
           title="Resume"
           style={{ background: 'white' }}

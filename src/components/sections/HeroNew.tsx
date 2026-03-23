@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { easings } from '@/components/motion/animations'
 import { GooeyText } from '@/components/ui/gooey-text-morphing'
+import { resumeFile } from '@/data/resume-file'
 import { cn } from '@/lib/utils'
 
 const useIsHoverDevice = () => {
@@ -272,7 +273,7 @@ export function HeroNew() {
             </motion.a>
 
             <motion.a
-              href={`/resume.pdf?v=${Date.now()}`}
+              href={resumeFile.url}
               download
               className={cn(
                 'relative px-8 py-4 group overflow-hidden rounded-none',

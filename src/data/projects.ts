@@ -22,6 +22,7 @@ export const projects: Project[] = [
     ],
     links: {
       github: 'https://github.com/nihar5hah/KalExam',
+      demo: 'https://kalexam-3666b.web.app/',
     },
   },
   {
@@ -64,6 +65,37 @@ export const projects: Project[] = [
     ],
     links: {
       github: 'https://github.com/nihar5hah/mission-control',
+      demo: 'https://mission-control-one-gold.vercel.app',
+    },
+  },
+  {
+    id: 'voiceserve',
+    title: 'VoiceServe for PetPooja – AI Voice Ordering & Analytics System',
+    description:
+      'An end-to-end voice AI ordering system with real-time upselling, order automation, and live restaurant analytics.',
+    longDescription:
+      'VoiceServe for PetPooja is a production-style Voice AI system that converts customer calls into structured, analytics-ready restaurant orders. A Retell voice agent handles live conversations, validates spoken menu items against the catalog, recommends high-confidence add-ons, and triggers order creation through FastAPI services. The backend exposes focused APIs for menu validation, order processing, and recommendation workflows, while Supabase PostgreSQL stores operational and analytics data. Upsell intelligence is powered by association rule mining on transaction patterns to surface combo opportunities in real time. A Next.js dashboard streams live updates with Supabase Realtime so owners can monitor order flow, conversion behavior, and recommendation impact without polling. The closed-loop architecture continuously learns from each completed order to improve future upsell relevance and decision quality.',
+    technologies: [
+      'FastAPI',
+      'Next.js 14',
+      'Supabase',
+      'Retell AI',
+      'Association Rule Mining',
+      'PostgreSQL',
+    ],
+    featured: true,
+    image: '/projects/voiceserve.png',
+    imagePlaceholder: 'VoiceServe Analytics Dashboard Screenshot',
+    highlights: [
+      'AI-powered voice ordering with real-time upselling and order automation',
+      'FastAPI APIs for menu validation, order processing, and recommendations',
+      'Data-driven upsell engine using association rule mining',
+      'Real-time analytics dashboard with Next.js and Supabase',
+      'Closed-loop learning where each order improves future recommendations',
+    ],
+    links: {
+      github: 'https://github.com/nihar5hah/VoiceServe-for-PetPooja',
+      demo: 'https://pet-pooja-kappa.vercel.app',
     },
   },
   {
@@ -85,6 +117,7 @@ export const projects: Project[] = [
     ],
     links: {
       github: 'https://github.com/nihar5hah/HireAI',
+      demo: 'https://hire-ai-phi.vercel.app',
     },
   },
   {
