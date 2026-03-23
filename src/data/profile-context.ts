@@ -108,6 +108,23 @@ Core capabilities:
 
 GitHub: https://github.com/nihar5hah/mission-control
 
+### VoiceServe for PetPooja — AI Voice Ordering & Analytics System
+
+Type: Hackathon Project (PetPooja Track)
+
+Description:
+An end-to-end voice AI ordering system with real-time upselling, order automation, and live restaurant analytics.
+
+Core capabilities:
+- AI-powered voice ordering with real-time upselling and order automation
+- FastAPI APIs for menu validation, order processing, and recommendations
+- Data-driven upsell engine using association rule mining
+- Real-time analytics dashboard with Next.js and Supabase Realtime
+- Closed-loop system where each order improves future recommendations
+
+GitHub: https://github.com/nihar5hah/VoiceServe-for-PetPooja
+Demo: https://pet-pooja-kappa.vercel.app
+
 ### HireAI — AI-Powered Job Assessment Platform
 
 Type: Hackathon Project (Built in 24 hours)
@@ -180,6 +197,7 @@ GitHub: https://github.com/nihar5hah/FaceAttend
 
 ### Databases & Backend
 - Supabase (PostgreSQL, Realtime, Authentication, Storage)
+- FastAPI
 - REST APIs
 - Webhooks
 - JSON-based configuration systems
