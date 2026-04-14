@@ -119,23 +119,6 @@ export function HeroNew() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: easings.mechanical }}
         >
-          {/* Status badge */}
-          <motion.div
-            className="flex items-center gap-2 mb-8 text-sm"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <motion.div
-              className="w-2 h-2 rounded-full bg-accent"
-              animate={{ opacity: [1, 0.5, 1], scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <span className="text-foreground-secondary">
-              Applied AI Systems &middot; Multi-Agent Architectures
-            </span>
-          </motion.div>
-
           {/* ── Headline ──────────────────────────────────────────────────── */}
           <motion.div
             className="mb-8"
